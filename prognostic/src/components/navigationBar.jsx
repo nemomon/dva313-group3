@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-class NavigationBar extends Component {
+export class NavigationBar extends Component {
   state = {
     /* The state of the class goes here
          To update the state, call setState() */
