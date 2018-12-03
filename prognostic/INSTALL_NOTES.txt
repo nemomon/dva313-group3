@@ -1,5 +1,6 @@
-### INSTALL INSTRUCTIONS ####
-
+##############################
+#### INSTALL INSTRUCTIONS ####
+##############################
 
 1. INSTALL NODE.JS (https://nodejs.org/en/)
 node.js is not used per se, we need node.js to get npm, 
@@ -20,6 +21,43 @@ different repositories from the command line.
 
 
 
+
+#################################
+#### SOME USEFUL INFORMATION ####
+#################################
+
+- The src/components folder contains our cosutom components that we create, name them with a .jsx extension.
+
+- In the src/app.js file we attatch our components in the render method, if you take a look at it, you see it have
+  an <Navigationbar/> and an <PersonTable/> for now.
+
+- The src/index.js file renders the <app/> component into an DOM-element, in this case the element named 'root'.
+
+- To build an optimized version of the app, run 'npm build', it will create an build folder that you basically can 
+  upload to a server directly if you just change the file extension to .php from .html, or try it locally directly 
+	(some file-path can require tweaking)
+	
+- The node_modules folder and the build folder are in the .gitignore file, so any changes in those folders will not be
+  pushed to GitHub, this means:
+	
+			1. If you install dependencies with npm, like interact.JS, it will be downloaded to your own machine but not to the
+				 repo on GitHub, so you need to provide the other members with the npm commando to install it.
+				 
+			2. We can use the demo folder to put versions that we build with "npm build", just to have something to show in one place
+				 to the client and Jan without needing to install node.js and all the dependencies. 
+				 
+				 
+				
+###########################################
+#### TIPS IF YOU ARE USING VISUAL CODE ####
+###########################################
+
+-  Install the extension 'Prettier' and 'Simple React Snippets'
+   these extensions is really nice and will faciliate your coding and making yout friends happy :)
+	 (See the react crash course video, it explains these extension in the begining)
+				 
+	
+	
 
 
 
