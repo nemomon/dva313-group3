@@ -1,0 +1,27 @@
+### INSTALL INSTRUCTIONS ####
+
+
+1. INSTALL NODE.JS (https://nodejs.org/en/)
+node.js is not used per se, we need node.js to get npm, 
+node package manager to be abel to install stuff from
+different repositories from the command line.
+
+2. CRAETE AN EMPTY FOLDER AND NAVIGATE INTO IT FROM THE COMMAND LINE
+
+3. RUN: npx create-react-app my-app
+
+4. COPY THE FODLER "node_modeuls" INTO YOUR PROGNOSTIC FOLDER
+
+5. DELETE THE my-app FODLER THAT YOU CREATED IN STEP 3
+
+6. NAVIGATE INTO THE PROGNOSTIC FOLDER AND RUN: npm start
+
+7. IF SUCCESSFUL, YOU SHOULD SEE A REALLY UGLY PAGE.
+
+
+
+
+
+
+
+
