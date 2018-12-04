@@ -1,6 +1,8 @@
 import React from 'react';
 import { Navbar, NavbarBrand, NavbarNav, NavItem, NavLink, NavbarToggler, Collapse, FormInline, Dropdown, DropdownToggle, DropdownMenu,  DropdownItem } from "mdbreact";
-
+import "font-awesome/css/font-awesome.min.css";
+import "bootstrap-css-only/css/bootstrap.min.css";
+import "mdbreact/dist/css/mdb.css";
 
 
 class NavigationBar extends React.Component {
@@ -13,9 +15,9 @@ class NavigationBar extends React.Component {
   render() {
     return (
 
-      <Navbar color="indigo" dark expand="md">
+      <Navbar color="black" dark expand="md">
           <NavbarBrand>
-            <strong className="white-text">Navbar</strong>
+            <strong className="white-text">Prognostic</strong>
           </NavbarBrand>
           <NavbarToggler
             onClick={this.toggleCollapse}
@@ -27,24 +29,22 @@ class NavigationBar extends React.Component {
           >
             <NavbarNav left>
               <NavItem active>
-                <NavLink to="#!">Home</NavLink>
+                <NavLink to="#!">Allocate staff</NavLink>
               </NavItem>
               <NavItem>
-                <NavLink to="#!">Features</NavLink>
+                <NavLink to="#!">Show Projects</NavLink>
               </NavItem>
               <NavItem>
-                <NavLink to="#!">Pricing</NavLink>
+                <NavLink to="#!">DUMMY HEADER</NavLink>
               </NavItem>
               <NavItem>
                 <Dropdown>
                   <DropdownToggle nav caret>
-                    <div className="d-none d-md-inline">Dropdown</div>
+                    <div className="d-none d-md-inline">Add</div>
                   </DropdownToggle>
                   <DropdownMenu right>
-                    <DropdownItem href="#!">Action</DropdownItem>
-                    <DropdownItem href="#!">Another Action</DropdownItem>
-                    <DropdownItem href="#!">Something else here</DropdownItem>
-                    <DropdownItem href="#!">Something else here</DropdownItem>
+                    <DropdownItem href="#!">Staff</DropdownItem>
+                    <DropdownItem href="#!">Project</DropdownItem>
                   </DropdownMenu>
                 </Dropdown>
               </NavItem>
@@ -69,5 +69,6 @@ class NavigationBar extends React.Component {
   }
 }
 /* Need to type this after creating a component so other files can import it */
+
 export default NavigationBar;
 
