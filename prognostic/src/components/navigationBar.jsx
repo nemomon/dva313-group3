@@ -1,5 +1,4 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React, { Component } from "react";
 
 class NavigationBar extends Component {
   state = {
@@ -13,8 +12,3 @@ class NavigationBar extends Component {
 }
 /* Need to type this after creating a component so other files can import it */
 export default NavigationBar;
-
-ReactDOM.render(
-  <NavigationBar />
-  // document.getElementById('app')
-)
