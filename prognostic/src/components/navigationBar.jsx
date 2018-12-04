@@ -29,13 +29,22 @@ class NavigationBar extends React.Component {
           >
             <NavbarNav left>
               <NavItem active>
-                <NavLink to="#!">Allocate staff</NavLink>
+                <NavLink to="#!">People</NavLink>
               </NavItem>
               <NavItem>
-                <NavLink to="#!">Show Projects</NavLink>
+                <NavLink to="#!">Projects</NavLink>
               </NavItem>
               <NavItem>
-                <NavLink to="#!">DUMMY HEADER</NavLink>
+                <NavLink to="#!">Allocation</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink to="#!">Spending</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink to="#!">Remaning</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink to="#!">End Balance</NavLink>
               </NavItem>
               <NavItem>
                 <Dropdown>
