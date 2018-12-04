@@ -14,7 +14,3 @@ class NavigationBar extends Component {
 /* Need to type this after creating a component so other files can import it */
 export default NavigationBar;
 
-ReactDOM.render(
-  <NavigationBar />
-  // document.getElementById('app')
-)
