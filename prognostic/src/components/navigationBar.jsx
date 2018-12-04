@@ -50,18 +50,7 @@ class NavigationBar extends React.Component {
               </NavItem>
             </NavbarNav>
             <NavbarNav right>
-              <NavItem>
-                <FormInline waves>
-                  <div className="md-form my-0">
-                    <input
-                      className="form-control mr-sm-2"
-                      type="text"
-                      placeholder="Search"
-                      aria-label="Search"
-                    />
-                  </div>
-                </FormInline>
-              </NavItem>
+            <strong className="white-text">//</strong>
             </NavbarNav>
           </Collapse>
       </Navbar>
