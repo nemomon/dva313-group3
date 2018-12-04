@@ -19,7 +19,11 @@ different repositories from the command line.
 
 7. IF SUCCESSFUL, YOU SHOULD SEE A REALLY UGLY PAGE.
 
+#################################
+#### TO INSTALL THE TIMELINE ####
+#################################
 
+1. RUN: npm install mbdreact --save in /user (if it does not work, also run in prognostic folder)
 
 
 #################################
