@@ -17,7 +17,7 @@ class NavigationBar extends React.Component {
 
       <Navbar color="black" dark expand="md">
           <NavbarBrand>
-            <strong className="white-text">Prognostic</strong>
+            <strong className="white-text">PROGNOSTIC</strong>
           </NavbarBrand>
           <NavbarToggler
             onClick={this.toggleCollapse}
