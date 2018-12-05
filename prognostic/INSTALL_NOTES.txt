@@ -27,7 +27,7 @@ different repositories from the command line.
 
 Run all the commands in the prognostic folder:
 
-npm install mbdreact --save
+npm install --save mdbreact
 npm install --save vis
 npm install --save react-visjs-timeline
 
