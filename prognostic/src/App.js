@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./App.css";
 import NavigationBar from "./components/navigationBar";
-import PersonTable from "./components/personsTable";
+import AllocationTab from "./components/allocation_tab/allocationTab";
 
 class App extends Component {
   render() {
@@ -9,7 +9,7 @@ class App extends Component {
       /*  Attach the diffenrent components her to build the whole UI */
       <React.Fragment>
         <NavigationBar />
-        <PersonTable />
+        <AllocationTab />
       </React.Fragment>
     );
   }
