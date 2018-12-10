@@ -30,6 +30,7 @@ Run all the commands in the prognostic folder:
 npm install --save mdbreact
 npm install --save vis
 npm install --save react-visjs-timeline
+npm install --save react-bootstrap-table
 
 
 #################################
