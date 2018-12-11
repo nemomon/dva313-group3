@@ -29,22 +29,22 @@ class NavigationBar extends React.Component {
           >
             <NavbarNav left>
               <NavItem active>
-                <NavLink to="#!">People</NavLink>
+                <NavLink to="/personTable">People</NavLink>
               </NavItem>
               <NavItem>
-                <NavLink to="#!">Projects</NavLink>
+                <NavLink to="/projectTable">Projects</NavLink>
               </NavItem>
               <NavItem>
-                <NavLink to="#!">Allocation</NavLink>
+                <NavLink to="/allocationTable">Allocation</NavLink>
               </NavItem>
               <NavItem>
-                <NavLink to="#!">Spending</NavLink>
+                <NavLink to="/spendingTable">Spending</NavLink>
               </NavItem>
               <NavItem>
-                <NavLink to="#!">Remaning</NavLink>
+                <NavLink to="/remaningTable">Remaning</NavLink>
               </NavItem>
               <NavItem>
-                <NavLink to="#!">End Balance</NavLink>
+                <NavLink to="/endBalanceTable">End Balance</NavLink>
               </NavItem>
               <NavItem>
                 <Dropdown>
@@ -58,9 +58,9 @@ class NavigationBar extends React.Component {
                 </Dropdown>
               </NavItem>
             </NavbarNav>
-            <NavbarNav right>
-            <strong className="white-text">//</strong>
-            </NavbarNav>
+            <NavItem>
+                <NavLink to="#!">SAVE</NavLink>
+              </NavItem>
           </Collapse>
       </Navbar>
     );
