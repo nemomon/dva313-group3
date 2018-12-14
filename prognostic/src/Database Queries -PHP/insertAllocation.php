@@ -6,7 +6,7 @@ session_start();
 
 
  $query = "INSERT INTO Allocation ( personId , projectId, Percentage, StartDate, EndDate)
-VALUES (".$_POST['personId'].", ".$_POST['projectId'].", ".$_POST['Percentage'].", ".$_POST['StartDate'].",  ".$_POST['EndDate'].")";
+VALUES (".$_POST['personId'].", ".$_POST['projectId'].", ".$_POST['Percentage'].", '".$_POST['StartDate']."',  '".$_POST['EndDate']."')";
 
 if ($connect->query($query) === TRUE) {
     echo "New record created successfully";
