@@ -32,6 +32,8 @@ class AllocationView extends Component {
 
     this.PHP = new PHP();
     this.init();
+    this.timelineWrapperRef = React.createRef();
+
   }
 
 
@@ -40,6 +42,7 @@ class AllocationView extends Component {
     width: "100%",
     height: "700px",
     start: new Date(),
+    end: new Date(),
     orientation: {
       axis: "bottom",
       item: "bottom"
@@ -51,7 +54,8 @@ class AllocationView extends Component {
       updateTime: true
     },
     zoomMax: 1000 * 60 * 60 * 24 * 24 * 12,
-    zoomMin: 1000 * 60 * 60 * 24 * 24,
+    // zoomMin: 1000 * 60 * 60 * 24 * 24,
+    zoomMin: 1000 * 60 * 60 * 24,
     align: "center",
     stack: false,
     type: "range",
@@ -95,6 +99,11 @@ class AllocationView extends Component {
       }
       callback(item);
     },
+    onInitialDrawComplete: () => {
+      //TODO calculate the dates, this esures a good initial zoomlevel, its not supported.
+      this.timelineWrapperRef.current.$el.setWindow(new Date(2018, 11, 1), new Date(2018, 11, 30), []);
+
+    }
   };
 
 
@@ -216,6 +225,11 @@ class AllocationView extends Component {
 
 
 
+  componentDidMount() {
+
+
+  }
+
 
   /************************************                    
    ************   EVENTS   ************            
@@ -224,6 +238,9 @@ class AllocationView extends Component {
   /* Fired when double clicking inside the timeline */
   optionsHandler = (props) => {
     if (props.item != null) {
+      // alert(this.timelineWrapperRef.current.$el.getCurrentTime());
+      this.timelineWrapperRef.current.$el.focus(props.item, []);
+
       console.log("Item double-clicked");
     }
 
@@ -236,6 +253,10 @@ class AllocationView extends Component {
     }
   }
 
+  changedHandler = () => {
+
+  }
+
   render() {
     return (
       <div className="prog-av">
@@ -243,6 +264,8 @@ class AllocationView extends Component {
         <div className="prog-av-container">
           <div>{this.props.name}</div>
           <Timeline
+            ref={this.timelineWrapperRef}
+            changedHandler={this.changedHandler}
             doubleClickHandler={this.optionsHandler}
             mouseMoveHandler={this.mouseMoveHandler}
             options={this.options}

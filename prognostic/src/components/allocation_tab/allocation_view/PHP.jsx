@@ -41,6 +41,13 @@ const allocations = [
         start: new Date(2018, 11, 25),
         end: new Date(2018, 11, 29), // end is optional
         content: "100"
+    },
+    {
+        id: 7,
+        group: 6,
+        start: new Date(2018, 7, 1),
+        end: new Date(2018, 7, 29), // end is optional
+        content: "100"
     }
 ];
 
