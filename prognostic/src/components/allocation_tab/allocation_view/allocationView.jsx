@@ -2,189 +2,158 @@ import React, { Component } from "react";
 import Timeline from "react-visjs-timeline";
 import PHP from "./PHP"
 
-/*
-  The allocationView is responsible for fetching all projects and setting up it's child
-  components correctly through props. 
-*/
-
+const ID_GROUP_TOTAL = -1;
 
 /*
+PROBLEM: The internal dataset visjs are using is not exposed to use, 
+meaning that any changes made on the allocations through the UI will not be reflected in our state.
 
+However, we can use callbacks when an item has been added, removed, moved, dragged, or updated, so
+we can through these methods ensure that we stay in sync with any changes. This problem arises
+becuase we are using an react abstraction, that is using the real visjs-timeline internally. 
 
-PROBS:
-  Initial zoom
-  Data binding (the state objects is not the same as the GUI objects)
-  The creation of the total timeline is problematic if implemented as a vis group with allocations. Different approah?
-  Methods dont work becuase of react rip. sort of.
-  
 */
-
 
 class AllocationView extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      projects: [],
       items: [],
       groups: [],
     };
 
     this.PHP = new PHP();
     this.init();
-    this.timelineWrapperRef = React.createRef();
 
+    /* A reference to the timeline object so methods can be called on it */
+    this.timelineRef = React.createRef();
   }
 
 
-  /* options for the timeline */
+  /* Options and events for the timeline, events are delageted to class methods  */
   options = {
     width: "100%",
     height: "700px",
     start: new Date(),
     end: new Date(),
+    groupOrder: "id",
     orientation: {
       axis: "bottom",
       item: "bottom"
     },
     editable: {
       add: true,
-      remove: false,
+      remove: true,
       updateGroup: false,
       updateTime: true
     },
     zoomMax: 1000 * 60 * 60 * 24 * 24 * 12,
-    // zoomMin: 1000 * 60 * 60 * 24 * 24,
     zoomMin: 1000 * 60 * 60 * 24,
     align: "center",
     stack: false,
     type: "range",
 
-
-    /* Events that are fired */
     onAdd: (item, callback) => {
-
-      if (item.group == 0) {
-        callback(null);
-        return;
-      }
-
-      item.content = "50";
-      this.state.items.push(item);
-
-      callback(item);
+      this.onAdd(item, callback);
+    },
+    onRemove: (item, callback) => {
+      this.onRemove(item, callback);
     },
     onMoving: (item, callback) => {
-      var endDate = this.getProjectEnd(item.group);
-
-      if (item.end > endDate) {
-        item.style = "background: red";
-      }
-      else {
-        item.style = "";
-      }
-      callback(item);
+      this.onMoving(item, callback);
     },
     onMove: (item, callback) => {
-
-      var i = this.getItemById(item.id);
-      console.log(i);
-
-      i.end = item.end;
-      i.start = item.start;
-
-      console.log(item);
-      if (i == item) {
-        alert("asdas");
-      }
-      callback(item);
+      this.onMove(item, callback);
     },
     onInitialDrawComplete: () => {
-      //TODO calculate the dates, this esures a good initial zoomlevel, its not supported.
-      this.timelineWrapperRef.current.$el.setWindow(new Date(2018, 11, 1), new Date(2018, 11, 30), []);
-
+      this.onInitialDrawComplete();
+    },
+    onUpdate: (item, callback) => {
+      this.onUpdate(item, callback);
     }
   };
 
 
+  onAdd(item, callback) {
+    if (item.group == ID_GROUP_TOTAL) {
+      callback(null);
+      return;
+    }
 
-  getProjectEnd(id) {
-    return this.state.projects[id - 1].end;
+    item.content = "100";
+    this.state.items.push(item);
+
+    callback(item);
   }
 
+  onRemove(item, callback) {
+    callback(item);
+  }
+
+  /* Checking if the allocations end date exceeds the projects when moving */
+  onMoving(item, callback) {
+    var endDate = this.state.groups[item.group].end;
+    item.style = item.end > endDate ? "background: rgba(175, 0, 0, 1);" : "";
+    callback(item);
+  }
+
+  /* Fired when double clicking an allocation */
+  onUpdate(item, callback) {
+    item.content = prompt("Input employment rate:", item.content);
+    item.content != null ? callback(item) : callback(null);
+
+  }
+
+  /* Fired when an item has been moved or dragged */
+  onMove(item, callback) {
+    if (item.start >= item.end) {
+      callback(null);
+      return;
+    }
+    var i = this.getItemById(item.id);
+
+    i.end = item.end;
+    i.start = item.start;
+
+    callback(item);
+  }
+
+  /* Set the timeline window to display the current month */
+  onInitialDrawComplete() {
+    var date = new Date();
+    var year = date.getFullYear();
+    var month = date.getMonth();
+    var nextMonth = (month == 11 ? 0 : month + 1);
+    var nextYear = (month == 11 ? year + 1 : year);
+    var day = 1;
+
+    this.timelineRef.current.$el.setWindow(new Date(year, month, day), new Date(nextYear, nextMonth, day), { animation: false });
+  }
 
   calculateTimelineHeight() {
     this.options.height = this.state.groups.length * 50 + 70 + 50;;
   }
 
-
   getItems() {
-    let items = this.PHP.getAllocations(1);
-
-    for (var i = 0; i < items.length; i++) {
-      this.state.items.push(items[i]);
-    }
+    this.state.items = this.PHP.getAllocations(1);
   }
-
-
-
-  createTotalTimeline() {
-    /* let it = this.state.items.length
-     for (var i = 0; i < it; i++) {
- 
-       var item = {
-         id: this.state.items[i].id + 100,
-         group: 0,
-         editable: false,
-         start: this.state.items[i].start,
-         end: this.state.items[i].end,
-         content: this.state.items[i].content
-       }
- 
-       this.state.items.push(item);
-     } */
-  }
-
 
   init() {
-    this.getProjects();
     this.createGroups();
     this.getItems();
-    this.createTotalTimeline();
     this.calculateTimelineHeight();
     this.createVisualBoundaries();
-    //  this.addToTotal();
   }
-
-
-  addToTotal() {
-    let data = this.state.items.push({
-      id: 2,
-      group: 0,
-      editable: false,
-      selectable: false,
-      start: new Date(2018, 11, 13),
-      end: new Date(2018, 11, 18), // end is optional
-      content: "alloc2",
-    });
-
-    this.setState({ items: data });
-
-  }
-
-
-
-
 
   createVisualBoundaries() {
     /* not including the total timeline */
-    for (var i = 1; i < this.state.projects.length; i++) {
+    for (var i = 1; i < this.state.groups.length; i++) {
 
       var item = {
-        id: i + 1110,
-        group: this.state.projects[i].id,
-        start: this.state.projects[i].end,
-        end: this.state.projects[i].end,
+        group: this.state.groups[i].id,
+        start: this.state.groups[i].end,
+        end: this.state.groups[i].end,
         type: "background"
       };
 
@@ -192,25 +161,16 @@ class AllocationView extends Component {
     }
   }
 
-
-  getProjects() {
-    let projects = this.PHP.getProjects();
-
-    for (var i = 0; i < projects.length; i++) {
-      this.state.projects.push(projects[i]);
-    }
-  }
-
-
   createGroups() {
-    this.state.groups.push({ id: 0, content: "TOTAL" });
+    let projects = this.PHP.getProjects();
+    this.state.groups.push({ id: ID_GROUP_TOTAL, content: "TOTAL" });
 
-    for (var i = 1; i <= this.state.projects.length; i++) {
-      this.state.groups.push({ id: i, content: this.state.projects[i - 1].name });
+    /* the project id becomes the group id, also including the projects end date in the group for easy access
+    when checking if an allocation exceed the end date */
+    for (var i = 0; i < projects.length; i++) {
+      this.state.groups.push({ id: projects[i].id, content: projects[i].name, end: projects[i].end });
     }
   }
-
-
 
   //TODO: Convert item array to map, ids need to be autogenerated and unique.
   getItemById(id) {
@@ -225,25 +185,16 @@ class AllocationView extends Component {
 
 
 
-  componentDidMount() {
-
-
-  }
-
-
   /************************************                    
-   ************   EVENTS   ************            
+   ********   TIMELINE EVENT   ********            
    ************************************/
+
 
   /* Fired when double clicking inside the timeline */
   optionsHandler = (props) => {
     if (props.item != null) {
-      // alert(this.timelineWrapperRef.current.$el.getCurrentTime());
-      this.timelineWrapperRef.current.$el.focus(props.item, []);
-
       console.log("Item double-clicked");
     }
-
   }
 
   /* Fired continuously when moving the mouse inside the timeline */
@@ -253,9 +204,7 @@ class AllocationView extends Component {
     }
   }
 
-  changedHandler = () => {
 
-  }
 
   render() {
     return (
@@ -264,8 +213,8 @@ class AllocationView extends Component {
         <div className="prog-av-container">
           <div>{this.props.name}</div>
           <Timeline
-            ref={this.timelineWrapperRef}
-            changedHandler={this.changedHandler}
+            ref={this.timelineRef}
+            selectHandler={this.selectHandler}
             doubleClickHandler={this.optionsHandler}
             mouseMoveHandler={this.mouseMoveHandler}
             options={this.options}

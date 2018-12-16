@@ -93,6 +93,46 @@ const projects = [
 ];
 
 
+const projects2 = [
+    {
+        id: 1,
+        name: "HigherBuilding",
+        start: new Date(2018, 11, 1),
+        end: new Date(2018, 11, 30), // end is optional
+    },
+    {
+        id: 2,
+        name: "Dricks",
+        start: new Date(2018, 10, 1),
+        end: new Date(2019, 1, 1), // end is optional
+    },
+    {
+        id: 3,
+        name: "AI-LOL2",
+        start: new Date(2018, 11, 1),
+        end: new Date(2018, 11, 15), // end is optional
+    },
+    {
+        id: 4,
+        name: "Project",
+        start: new Date(2018, 11, 1),
+        end: new Date(2019, 2, 1), // end is optional
+    },
+    {
+        id: 5,
+        name: "Designer-UY",
+        start: new Date(2018, 11, 19),
+        end: new Date(2019, 3, 1), // end is optional
+    },
+    {
+        id: 6,
+        name: "Blades",
+        start: new Date(2018, 11, 1),
+        end: new Date(2019, 1, 15), // end is optional
+    }
+];
+
+
 /* Singelton */
 class PHP {
     constructor() {
@@ -106,6 +146,11 @@ class PHP {
 
     getProjects() {
         return projects;
+    }
+
+
+    getProjects2() {
+        return projects2;
     }
 
     getAllocations(id) {
