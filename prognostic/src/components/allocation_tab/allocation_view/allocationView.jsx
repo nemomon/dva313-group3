@@ -1,93 +1,230 @@
 import React, { Component } from "react";
-import ProjectContainer from './projectContainer';
-import TotalContainer from './totalContainer';
+import Timeline from "react-visjs-timeline";
+import PHP from "./PHP"
+
+const ID_GROUP_TOTAL = -1;
 
 /*
-  The allocationView is responsible for fetching all projects and setting up it's child
-  components correctly through props. 
+PROBLEM: The internal dataset visjs are using is not exposed to use, 
+meaning that any changes made on the allocations through the UI will not be reflected in this state.
+
+However, we can use callbacks when an item has been added, removed, moved, dragged, or updated, so
+we can through these methods ensure that we stay in sync with any changes. This problem arises
+becuase we are using an react abstraction, that is using the real visjs-timeline internally. 
 
 */
-
-
-const groups = [
-  {
-    id: 1,
-    content: 'Project 1'
-    // Optional: a field 'className', 'style', 'order', [properties]
-  },
-  {
-    id: 2,
-    content: 'Project 2'
-    // Optional: a field 'className', 'style', 'order', [properties]
-  },
-  {
-    id: 3,
-    content: 'Project 3'
-    // Optional: a field 'className', 'style', 'order', [properties]
-  },
-  {
-    id: 4,
-    content: 'Project 4'
-    // Optional: a field 'className', 'style', 'order', [properties]
-  },
-  {
-    id: 5,
-    content: 'Project 5'
-    // Optional: a field 'className', 'style', 'order', [properties]
-  }
-];
-
-
-/* items on the timeline */
-const items = [
-  {
-    id: 1,
-    group: 0,
-    start: new Date(2018, 11, 1),
-    end: new Date(2018, 11, 4), // end is optional
-    content: "allocation",
-  }
-];
-
-const SIZE = 10;
 
 class AllocationView extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      projects: []
+      items: [],
+      groups: [],
     };
 
-    this.getProjects();
+    this.PHP = new PHP();
+    this.init();
+
+    /* A reference to the timeline object so methods can be called on it */
+    this.timelineRef = React.createRef();
   }
 
-  getProjects() {
-    for (var i = 1; i <= SIZE; i++) {
-      this.state.projects.push({ name: "Project" + i });
+
+  /* Options and events for the timeline, events are delageted to class methods  */
+  options = {
+    width: "100%",
+    height: "700px",
+    start: new Date(),
+    end: new Date(),
+    groupOrder: "id",
+    orientation: {
+      axis: "bottom",
+      item: "bottom"
+    },
+    editable: {
+      add: true,
+      remove: true,
+      updateGroup: false,
+      updateTime: true
+    },
+    zoomMax: 1000 * 60 * 60 * 24 * 24 * 12,
+    zoomMin: 1000 * 60 * 60 * 24,
+    align: "center",
+    stack: false,
+    type: "range",
+
+    onAdd: (item, callback) => {
+      this.onAdd(item, callback);
+    },
+    onRemove: (item, callback) => {
+      this.onRemove(item, callback);
+    },
+    onMoving: (item, callback) => {
+      this.onMoving(item, callback);
+    },
+    onMove: (item, callback) => {
+      this.onMove(item, callback);
+    },
+    onInitialDrawComplete: () => {
+      this.onInitialDrawComplete();
+    },
+    onUpdate: (item, callback) => {
+      this.onUpdate(item, callback);
+    }
+  };
+
+
+  onAdd(item, callback) {
+    if (item.group == ID_GROUP_TOTAL) {
+      callback(null);
+      return;
     }
 
+    item.content = "100";
+    this.state.items.push(item);
+
+    callback(item);
   }
 
-  getGroups() {
-    var groups = [];
+  onRemove(item, callback) {
+    callback(item);
+  }
 
-    for (var i = 0; i < SIZE; i++) {
-      groups.push({ id: i, content: this.state.projects[i].name });
+  /* Checking if the allocations end date exceeds the projects when moving */
+  onMoving(item, callback) {
+    var endDate = this.state.groups[item.group].end;
+    item.style = item.end > endDate ? "background: rgba(175, 0, 0, 1);" : "";
+    callback(item);
+  }
+
+  /* Fired when double clicking an allocation */
+  onUpdate(item, callback) {
+    item.content = prompt("Input employment rate:", item.content);
+    item.content != null ? callback(item) : callback(null);
+
+  }
+
+  /* Fired when an item has been moved or dragged */
+  onMove(item, callback) {
+    if (item.start >= item.end) {
+      callback(null);
+      return;
+    }
+    var i = this.getItemById(item.id);
+
+    i.end = item.end;
+    i.start = item.start;
+
+    callback(item);
+  }
+
+  /* Set the timeline window to display the current month */
+  onInitialDrawComplete() {
+    var date = new Date();
+    var year = date.getFullYear();
+    var month = date.getMonth();
+    var nextMonth = (month == 11 ? 0 : month + 1);
+    var nextYear = (month == 11 ? year + 1 : year);
+    var day = 1;
+
+    this.timelineRef.current.$el.setWindow(new Date(year, month, day), new Date(nextYear, nextMonth, day), { animation: false });
+  }
+
+  calculateTimelineHeight() {
+    this.options.height = this.state.groups.length * 50 + 70 + 50;;
+  }
+
+  getItems() {
+    this.state.items = this.PHP.getAllocations(1);
+  }
+
+  init() {
+    this.createGroups();
+    this.getItems();
+    this.calculateTimelineHeight();
+    this.createVisualBoundaries();
+  }
+
+  createVisualBoundaries() {
+    /* not including the total timeline */
+    for (var i = 1; i < this.state.groups.length; i++) {
+
+      var item = {
+        group: this.state.groups[i].id,
+        start: this.state.groups[i].end,
+        end: this.state.groups[i].end,
+        type: "background"
+      };
+
+      this.state.items.push(item);
+    }
+  }
+
+  createGroups() {
+    let projects = this.PHP.getProjects();
+    this.state.groups.push({ id: ID_GROUP_TOTAL, content: "TOTAL" });
+
+    /* the project id becomes the group id, also including the projects end date in the group for easy access
+    when checking if an allocation exceed the end date */
+    for (var i = 0; i < projects.length; i++) {
+      this.state.groups.push({ id: projects[i].id, content: projects[i].name, end: projects[i].end });
+    }
+  }
+
+  //TODO: Convert item array to map, ids need to be autogenerated and unique.
+  getItemById(id) {
+    for (var i = 0; i < this.state.items.length; i++) {
+      if (this.state.items[i].id == id) {
+        return this.state.items[i];
+      }
     }
 
-    return groups;
+    return null;
   }
+
+
+
+  /************************************                    
+   ********   TIMELINE EVENT   ********            
+   ************************************/
+
+
+  /* Fired when double clicking inside the timeline */
+  optionsHandler = (props) => {
+    if (props.item != null) {
+      console.log("Item double-clicked");
+    }
+  }
+
+  /* Fired continuously when moving the mouse inside the timeline */
+  mouseMoveHandler = (props) => {
+    if (props.item != null) {
+      console.log(props.item);
+    }
+  }
+
+
 
   render() {
     return (
       <div className="prog-av">
         <div className="prog-av-user">Leia Skywalker</div>
-        <TotalContainer name={"Total"} />
-        <ProjectContainer items={items} groups={this.getGroups()} />
+        <div className="prog-av-container">
+          <div>{this.props.name}</div>
+          <Timeline
+            ref={this.timelineRef}
+            selectHandler={this.selectHandler}
+            doubleClickHandler={this.optionsHandler}
+            mouseMoveHandler={this.mouseMoveHandler}
+            options={this.options}
+            items={this.state.items}
+            groups={this.state.groups} />
+        </div>
       </div>
     );
   }
 }
+
 
 export default AllocationView;
