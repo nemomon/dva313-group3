@@ -6,7 +6,7 @@ const ID_GROUP_TOTAL = -1;
 
 /*
 PROBLEM: The internal dataset visjs are using is not exposed to use, 
-meaning that any changes made on the allocations through the UI will not be reflected in our state.
+meaning that any changes made on the allocations through the UI will not be reflected in this state.
 
 However, we can use callbacks when an item has been added, removed, moved, dragged, or updated, so
 we can through these methods ensure that we stay in sync with any changes. This problem arises
