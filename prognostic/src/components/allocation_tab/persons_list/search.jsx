@@ -8,7 +8,7 @@ let users = [
         name: "Chris",
     },
     {
-        name: "erika",
+        name: "Erika",
 
     },
     {
@@ -16,7 +16,7 @@ let users = [
 
     },
     {
-        name: "abc",
+        name: "Leia",
 
     },
     {
@@ -63,14 +63,14 @@ class Search extends React.Component {
 
         return (
             <div className="pg-search">
-                <h3>search persons</h3>
+                <h2>SEARCH STAFF</h2>
                 <div>
                     <input
                         type="text"
                         value={this.state.searchString}
                         ref="search"
                         onChange={this.handleChange}
-                        placeholder="type name here"
+                        placeholder="Type name here"
                     />
                     <ul>
                         {_users.map(l => {
