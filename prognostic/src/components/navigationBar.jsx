@@ -28,7 +28,7 @@ class NavigationBar extends React.Component {
             navbar
           >
             <NavbarNav left>
-              <NavItem active>
+              <NavItem>
                 <NavLink to="/personTable">People</NavLink>
               </NavItem>
               <NavItem>
