@@ -15,16 +15,18 @@ class App extends Component {
       /*  Attach the diffenrent components her to build the whole UI */
       <React.Fragment>
         <NavigationBar />
-        <Route path="/allocationTable" component={AllocationTab} />
+        <AllocationTab/>
+   { /*    <Route path="/allocationTable" component={AllocationTab} />
         <Route path="/personTable" component={PersonTab} />
         <Route path="/projectTable" component={ProjectTab} />
         <Route path="/spendingTable" component={SpendingTab} />
         <Route path="/remaningTable" component={RemainingTab} />
-        <Route path="/endBalanceTable" component={EndBalanceTab} />
+        <Route path="/endBalanceTable" component={EndBalanceTab} /> */}
       </React.Fragment>
 
     );
   }
 }
+
 
 export default App;
