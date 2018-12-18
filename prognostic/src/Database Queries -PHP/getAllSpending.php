@@ -14,7 +14,7 @@
                 //push all the rows in array
                 while($row = mysqli_fetch_array($result))  
                 {  
-                  $output[] = array_push($output, array(
+                    array_push($output, array(
                    'Name' => $row['Name'],
                    'SpendingDate' => $row['SpendingDate'],
                    'SpendingExternalSalary' => $row['SpendingExternalSalary'],
