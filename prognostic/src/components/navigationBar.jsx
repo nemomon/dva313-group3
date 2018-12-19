@@ -3,6 +3,7 @@ import { Navbar, NavbarBrand, NavbarNav, NavItem, NavLink, NavbarToggler, Collap
 import "font-awesome/css/font-awesome.min.css";
 import "bootstrap-css-only/css/bootstrap.min.css";
 import "mdbreact/dist/css/mdb.css";
+import "/Users/erikawejlander/Documents/GitHub/dva313-group3/prognostic/src/index.css";
 
 
 class NavigationBar extends React.Component {
@@ -15,9 +16,9 @@ class NavigationBar extends React.Component {
   render() {
     return (
 
-      <Navbar color="black" dark expand="md">
+      <Navbar className="navbar" dark expand="md" >
           <NavbarBrand>
-            <strong className="white-text">PROGNOSTIC</strong>
+            <strong className="navbarTitle">PROGNOSTIC /</strong>
           </NavbarBrand>
           <NavbarToggler
             onClick={this.toggleCollapse}
@@ -58,8 +59,8 @@ class NavigationBar extends React.Component {
                 </Dropdown>
               </NavItem>
             </NavbarNav>
-            <NavItem>
-                <NavLink to="#!">SAVE</NavLink>
+            <NavItem> 
+                <NavLink className ="navbarSave"to="#!">SAVE /</NavLink>
               </NavItem>
           </Collapse>
       </Navbar>

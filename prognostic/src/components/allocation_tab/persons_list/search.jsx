@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import "/Users/erikawejlander/Documents/GitHub/dva313-group3/prognostic/src/index.css";
+
 
 let users = [
     {
@@ -63,7 +65,8 @@ class Search extends React.Component {
 
         return (
             <div className="pg-search">
-                <h2>SEARCH STAFF</h2>
+                <h2>SEARCH STAFFING</h2>
+                
                 <div>
                     <input
                         type="text"
@@ -72,10 +75,10 @@ class Search extends React.Component {
                         onChange={this.handleChange}
                         placeholder="Type name here"
                     />
-                    <ul>
+                    <ul className="pg-search-list">
                         {_users.map(l => {
                             return (
-                                <li>
+                                <li className="pg-search-list">
                                     {l.name} <a href="#">{l.email}</a>
                                 </li>
                             );

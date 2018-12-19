@@ -14,7 +14,7 @@ class App extends Component {
     return (
       /*  Attach the diffenrent components her to build the whole UI */
       <React.Fragment>
-        <NavigationBar />
+        <NavigationBar/>
         <Route path="/allocationTable" component={AllocationTab} />
         <Route path="/personTable" component={PersonTab} />
         <Route path="/projectTable" component={ProjectTab} />
