@@ -6,6 +6,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: gray;
   
 }
 
@@ -61,13 +62,21 @@ code {
 .pg-search-list {
   list-style-type: none;
   padding: 10px;
+  cursor:pointer;
 }
 
-.pg-search-list:hover {
+.pg-search-list li:hover {
   list-style-type: none;
   color:lightgray;
   padding: 10px;
   transition: .3s ease-out;
 
+}
+
+/* T A B L E D I V - S T A N D A R D */
+.tableDiv{
+  width:95%;
+  padding-top:20px;
+  padding-left:5%;
 }
 

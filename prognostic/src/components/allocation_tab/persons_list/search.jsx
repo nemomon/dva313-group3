@@ -22,10 +22,10 @@ let users = [
 
     },
     {
-        name: "cde",
+        name: "Anna",
     },
     {
-        name: "cgh",
+        name: "Zaid",
     },
 
 ];
