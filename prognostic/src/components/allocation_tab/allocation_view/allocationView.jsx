@@ -24,6 +24,7 @@ class AllocationView extends Component {
   init() {
     this.createGroups();
     this.getItems();
+    //  this.calculateTimelineHeight();
   }
 
   /* Options and events for the timeline, events are delageted to class methods  */
@@ -192,6 +193,16 @@ class AllocationView extends Component {
     for (var i = 0; i < difference.length; i++) {
       this.groups.update({ id: difference[i], visible: this.showEmptyGroups });
     }
+
+    /* let newHeight;
+     if (this.showEmptyGroups) {
+       newHeight = (allGroups.length * 50 + 70) + "px";
+     }
+     else {
+       newHeight = ((-difference.length * 50) + (allGroups.length * 50) + 70) + "px";
+     }
+     this.timeline.setOptions({ height: newHeight }); */
+
   }
 
   render() {

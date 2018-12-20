@@ -86,21 +86,21 @@ body {
     border-color: black;
 }
 
+
 .vis-label .vis-inner {
     min-height: 50px;
 }
+
 
 .vis-inner {
     font-weight: bold;
 }
 
-/*
-.pg-search {
-    float: left;
-    width: 10%;
-}
-*/
 
 .vis-panel.vis-left {
     width: 150px;
+}
+
+.vis-panel {
+    box-sizing: content-box;
 }
