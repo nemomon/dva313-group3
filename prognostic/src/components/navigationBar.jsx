@@ -60,7 +60,7 @@ class NavigationBar extends React.Component {
               </NavItem>
             </NavbarNav>
             <NavItem> 
-                <NavLink className ="navbarSave"to="#!">SAVE CHANGES/</NavLink>
+                <NavLink className ="navbarSave"to="#!">SAVE CHANGES /</NavLink>
               </NavItem>
           </Collapse>
       </Navbar>

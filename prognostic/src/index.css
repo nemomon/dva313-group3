@@ -47,6 +47,12 @@ code {
   float: left;
   width: 11%;
   text-decoration: none;
+  margin-top:17px;
+  border-right-style: solid;
+  border-right-color: white;
+  border-right-width: 0.5px;
+  height:850px;
+
 }
 
 .pg-search h2 {
@@ -57,7 +63,13 @@ code {
 
 .pg-search input[type=text]{
   padding: 5px;
+  width:90%; 
+  border-radius: 5px;
+  border-style:solid;
+  border-width:1px;
+  border-color:gray;
 }
+
 
 .pg-search-list {
   list-style-type: none;
@@ -76,7 +88,7 @@ code {
 /* T A B L E D I V - S T A N D A R D */
 .tableDiv{
   width:95%;
-  padding-top:20px;
+  padding-top:3%;
   padding-left:5%;
 }
 
