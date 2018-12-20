@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import "/Users/erikawejlander/Documents/GitHub/dva313-group3/prognostic/src/index.css";
 
 
 let users = [
@@ -66,7 +65,7 @@ class Search extends React.Component {
         return (
             <div className="pg-search">
                 <h2>SEARCH STAFFING</h2>
-                
+
                 <div>
                     <input
                         type="text"
