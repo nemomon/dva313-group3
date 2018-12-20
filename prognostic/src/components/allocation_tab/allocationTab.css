@@ -101,8 +101,6 @@ body {
 }
 
 
-
-
-/*
-I have solved it using minHeight on this element in vis.css .vis-label .vis-inner
-*/
+.vis-panel.vis-left {
+    width: 150px;
+}

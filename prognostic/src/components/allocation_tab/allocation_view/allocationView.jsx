@@ -1,42 +1,34 @@
 import React, { Component } from "react";
-import Timeline from "react-visjs-timeline";
+import vis from "vis";
 import PHP from "./PHP"
+import "../../../../node_modules/vis/dist/vis-timeline-graph2d.min.css"
 
 const ID_GROUP_TOTAL = -1;
-
-
-/*********************************************************************************************
-*  The internal dataset visjs are using is not exposed to use, meaning that any changes      *
-*  made on the allocations through the UI will not be reflected in this state.               *
-*                                                                                            *
-*  However, we can use callbacks when an item has been added, removed, moved, dragged, or    *
-*  updated, so we can through these methods ensure that we stay in sync with any changes.    *
-*  This problem arises becuase we are using an react abstraction, that is using the real     *
-*  visjs-timeline internally.                                                                *
-*                                                                                            *
-**********************************************************************************************/
+const DEFAULT_EMP_RATE = "100";
 
 class AllocationView extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      items: [],
-      groups: [],
-    };
+    this.state = {};
 
+    this.items = new vis.DataSet({});
+    this.groups = new vis.DataSet({});
     this.PHP = new PHP();
-    this.init();
+    this.timeline = null;
+    this.showEmptyGroups = true;
 
-    /* A reference to the timeline object so methods can be called on it */
-    this.timelineRef = React.createRef();
+    this.init();
   }
 
+  init() {
+    this.createGroups();
+    this.getItems();
+  }
 
   /* Options and events for the timeline, events are delageted to class methods  */
   options = {
     width: "100%",
-    height: "700px",
     start: new Date(),
     end: new Date(),
     groupOrder: "id",
@@ -80,26 +72,21 @@ class AllocationView extends Component {
 
   /**************************  ALLOCATION EVENTS  **************************
   *                                                                        *
-  *   If the changes are accepted, you MUST make a call: callback(item),   *
-  *   if you want to prevent the changes: callback(null).                  *
-  *                                                                        *
-  *   NOTE: callback(item) updates the internal dataset, not the           *
-  *   this.state.items array, we need to make sure they are in sync        *
-  *   in onAdd, onRemove, onUpdate, onMoved if we callback(item).          *
+  *   If the changes are accepted, you must call: callback(item) to        *
+  *   update the this.items dataset, to discard the changes, call          *
+  *   callback(null).                                                      *
   *                                                                        *
   **************************************************************************/
 
-  /* Fired when an item is added to the timeline
-  */
+  /* Fired when an item is added to the timeline */
   onAdd(item, callback) {
     if (item.group == ID_GROUP_TOTAL) {
       callback(null);
       return;
     }
 
-    item.content = "100";
-    this.state.items.push(item);
-
+    item.content = DEFAULT_EMP_RATE;
+    this.alertProjectEndExceeded(item.end > this.groups.get(item.group).end, item);
     callback(item);
   }
 
@@ -107,26 +94,20 @@ class AllocationView extends Component {
     callback(item);
   }
 
-
   /* Fired continuously when an allocation is dragged.
      Is used to check if the allocations end date exceeds the project, 
      and if, display a warning.
   */
   onMoving(item, callback) {
-    var endDate = this.state.groups[item.group].end;
-    item.style = item.end > endDate ? "background: rgba(175, 0, 0, 1);" : "";
+    this.alertProjectEndExceeded(item.end > this.groups.get(item.group).end, item);
     callback(item);
   }
 
-
-  /* Fired when double clicking an allocation. 
-     TODO: validate the input
-  */
+  /* Fired when double clicking an allocation. */
   onUpdate(item, callback) {
     item.content = prompt("Input employment rate:", item.content);
     item.content != null ? callback(item) : callback(null);
   }
-
 
   /* Fired when an item has been moved or dragged 
   */
@@ -135,14 +116,9 @@ class AllocationView extends Component {
       callback(null);
       return;
     }
-    var i = this.getItemById(item.id);
-
-    i.end = item.end;
-    i.start = item.start;
 
     callback(item);
   }
-
 
   /* Fired when the timeline has been drawn, is used to set
      the timeline window so it displays the current month nicley
@@ -155,102 +131,66 @@ class AllocationView extends Component {
     var nextYear = (month == 11 ? year + 1 : year);
     var day = 1;
 
-    this.timelineRef.current.$el.setWindow(new Date(year, month, day), new Date(nextYear, nextMonth, day), { animation: false });
+    this.timeline.setWindow(new Date(year, month, day), new Date(nextYear, nextMonth, day), { animation: false });
   }
 
   /***********************************************************
-  ***********************  END EVENTS  ***********************
+  *                        END EVENTS                        *
   ***********************************************************/
 
 
+  /* helper function to display visual warning if the allocation exceed a projects end date */
+  alertProjectEndExceeded(alert, item) {
+    item.style = alert ? "background: rgba(175, 0, 0, 1);" : "";
+  }
+
+  /* When react mounts the component, attatch the timeline to the div with id=timeline created in render() */
+  componentDidMount() {
+    let container = document.getElementById("timeline");
+    this.timeline = new vis.Timeline(container, this.items, this.groups, this.options);
+  }
 
 
+  /* ignore this function for now */
   calculateTimelineHeight() {
-    this.options.height = this.state.groups.length * 50 + 70 + 50;;
+    this.options.height = this.groups.length * 50 + 70;
   }
 
   getItems() {
-    this.state.items = this.PHP.getAllocations(1);
+    let item = this.PHP.getAllocations(1);
+    item.forEach(item => this.items.add({ id: item.id, content: item.content, start: item.start, end: item.end, group: item.group }));
   }
 
-  init() {
-    this.createGroups();
-    this.getItems();
-    this.calculateTimelineHeight();
-    this.createVisualBoundaries();
-  }
-
+  /* ignore this function for now */
   createVisualBoundaries() {
-    /* not including the total timeline */
-    for (var i = 1; i < this.state.groups.length; i++) {
-
-      /* background items are not interactable.
-         Setting a background-item with the same start and end date
-         which is equal the a projects end date, and then a left border 
-         in CSS makes a visual boundari on the group that depics when a 
-         project end
-      */
-      var item = {
-        group: this.state.groups[i].id,
-        start: this.state.groups[i].end,
-        end: this.state.groups[i].end,
-        type: "background"
-      };
-
-      this.state.items.push(item);
-    }
+    this.groups.forEach(item => {
+      if (item.id != ID_GROUP_TOTAL) {
+        this.items.add({ group: item.id, start: item.end, end: item.end, type: "background" })
+      }
+    });
   }
 
   createGroups() {
     let projects = this.PHP.getProjects();
-    this.state.groups.push({ id: ID_GROUP_TOTAL, content: "TOTAL" });
+    this.groups.add({ id: ID_GROUP_TOTAL, content: "TOTAL" });
 
     /* the project id becomes the group id, also including the projects end date in the group for easy access
     when checking if an allocation exceed the end date */
     for (var i = 0; i < projects.length; i++) {
-      this.state.groups.push({ id: projects[i].id, content: projects[i].name, end: projects[i].end });
+      this.groups.add({ id: projects[i].id, content: projects[i].name, end: projects[i].end, visible: true });
     }
   }
 
-  //TODO: Convert item array to map, ids need to be autogenerated and unique.
-  getItemById(id) {
-    for (var i = 0; i < this.state.items.length; i++) {
-      if (this.state.items[i].id == id) {
-        return this.state.items[i];
-      }
-    }
+  /* toggle between hide/show of all groups with no allocations */
+  toggleGroups = () => {
+    this.showEmptyGroups = !this.showEmptyGroups;
 
-    return null;
-  }
+    let notEmptyGroups = this.items.distinct("group");
+    let allGroups = this.groups.getIds();
+    let difference = allGroups.filter(x => !(notEmptyGroups.indexOf(x) > -1) && (x != ID_GROUP_TOTAL));
 
-
-
-
-  /********************************  TIMELINE EVENTS  ********************************
-  *                                                                                  *
-  *   We can also set up a whole lot of event on the timeline itsself, for example   *
-  *   if we wanna do a better UX design for providing the employment rate, sush as   *
-  *   holding and draging with the mouse on the allocation to change it              *
-  *                                                                                  * 
-  *   NOTE: timeline events MOST be passed down to the timeline with the visjs       *
-  *   event name with an "Handler" appended to it, read more in reacts-visjs and     *
-  *   vis events documentation                                                       *
-  *                                                                                  *                                    
-  ************************************************************************************/
-
-  /* Fired when double clicking inside the timeline 
-  */
-  optionsHandler = (props) => {
-    if (props.item != null) {
-      console.log("Item double-clicked");
-    }
-  }
-
-  /* Fired continuously when moving the mouse inside the timeline 
-  */
-  mouseMoveHandler = (props) => {
-    if (props.item != null) {
-      console.log(props.item);
+    for (var i = 0; i < difference.length; i++) {
+      this.groups.update({ id: difference[i], visible: this.showEmptyGroups });
     }
   }
 
@@ -258,16 +198,9 @@ class AllocationView extends Component {
     return (
       <div className="prog-av">
         <div className="prog-av-user">Leia Skywalker</div>
+        <button onClick={this.toggleGroups}>TOGGLE</button>
         <div className="prog-av-container">
-          <div>{this.props.name}</div>
-          <Timeline
-            ref={this.timelineRef}
-            selectHandler={this.selectHandler}
-            doubleClickHandler={this.optionsHandler}
-            mouseMoveHandler={this.mouseMoveHandler}
-            options={this.options}
-            items={this.state.items}
-            groups={this.state.groups} />
+          <div id="timeline"></div>
         </div>
       </div>
     );
