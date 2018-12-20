@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
 import "react-bootstrap-table/dist/react-bootstrap-table-all.min.css";
+import "/Users/erikawejlander/Documents/GitHub/dva313-group3/prognostic/src/index.css";
+
 
 //https://react-bootstrap-table.github.io/react-bootstrap-table2/storybook/index.html?selectedKind=Welcome&selectedStory=react%20bootstrap%20table%202%20&full=0&addons=1&stories=1&panelRight=0&addonPanel=storybook%2Factions%2Factions-panel
 
@@ -48,7 +50,7 @@ class personTab extends Component {
 
   createCustomInsertButton = openModal => {
     return (
-      <button type="button" class="btn btn-dark m-1" onClick={openModal}>
+      <button type="button" class="btn btn-dark m-1" onClick={openModal} style={{paddingLeft:15, paddingRight:15, paddingTop:8, paddingBottom:8}}>
         Add
       </button>
     );
@@ -56,7 +58,7 @@ class personTab extends Component {
 
   createCustomDeleteButton = onBtnClick => {
     return (
-      <button type="button" class="btn btn-dark m-1" onClick={onBtnClick}>
+      <button type="button" class="btn btn-dark m-1"  onClick={onBtnClick} style ={{paddingLeft:15, paddingRight:15, paddingTop:8, paddingBottom:8}}>
         Delete
       </button>
     );
@@ -72,7 +74,7 @@ class personTab extends Component {
     };
 
     return (
-      <div>
+      <div className ="tableDiv">
         <BootstrapTable
           data={products}
           cellEdit={cellEditProp}

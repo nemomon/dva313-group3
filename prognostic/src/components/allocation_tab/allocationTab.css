@@ -10,10 +10,10 @@ body {
 }
 
 .prog-av {
-    background: black;
+    background:#3d3d3d;
     color: white;
     float: left;
-    width: 90%;
+    width: 89%;
 }
 
 .prog-av-container {
@@ -94,12 +94,12 @@ body {
     font-weight: bold;
 }
 
-
+/*
 .pg-search {
     float: left;
     width: 10%;
 }
-
+*/
 
 .vis-panel.vis-left {
     width: 150px;

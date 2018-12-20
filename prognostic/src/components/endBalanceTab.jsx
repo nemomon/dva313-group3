@@ -34,7 +34,7 @@ class endBalanceTab extends Component {
 
   render() {
     return (
-      <div>
+      <div className="tableDiv">
         <BootstrapTable
           data={products}
           cellEdit={cellEditProp}
