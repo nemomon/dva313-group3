@@ -3,11 +3,14 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import PHPController from "./components/PHPController";
 import BrowserRouter from 'react-router-dom/BrowserRouter';
+
+//const _PHPController = new PHPController();
 
 const app = (
     <BrowserRouter>
-    <App />
+        <App />
     </BrowserRouter>
 );
 

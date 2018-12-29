@@ -10,13 +10,16 @@ import EndBalanceTab from "./components/endBalanceTab";
 import { Route } from "react-router-dom";
 import BodyBackgroundColor from "react-body-backgroundcolor";
 
+
+
+
 class App extends Component {
   render() {
     return (
       /*  Attach the diffenrent components her to build the whole UI */
       <BodyBackgroundColor backgroundColor='#3d3d3d'>
         <React.Fragment>
-          <NavigationBar/>
+          <NavigationBar />
           <Route path="/allocationTable" component={AllocationTab} />
           <Route path="/personTable" component={PersonTab} />
           <Route path="/projectTable" component={ProjectTab} />
@@ -25,7 +28,7 @@ class App extends Component {
           <Route path="/endBalanceTable" component={EndBalanceTab} />
         </React.Fragment>
       </BodyBackgroundColor>
-      
+
 
     );
   }

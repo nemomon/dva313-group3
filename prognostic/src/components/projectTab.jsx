@@ -38,7 +38,17 @@ class projectTab extends Component {
 
   createCustomInsertButton = openModal => {
     return (
-      <button type="button" className="btn btn-dark m-1" onClick={openModal} style={{ paddingLeft: 15, paddingRight: 15, paddingTop: 8, paddingBottom: 8 }}>
+      <button
+        type="button"
+        className="btn btn-dark m-1"
+        onClick={openModal}
+        style={{
+          paddingLeft: 15,
+          paddingRight: 15,
+          paddingTop: 8,
+          paddingBottom: 8
+        }}
+      >
         Add
       </button>
     );
@@ -46,7 +56,17 @@ class projectTab extends Component {
 
   createCustomDeleteButton = onBtnClick => {
     return (
-      <button type="button" className="btn btn-dark m-1" onClick={onBtnClick} style={{ paddingLeft: 15, paddingRight: 15, paddingTop: 8, paddingBottom: 8 }}>
+      <button
+        type="button"
+        className="btn btn-dark m-1"
+        onClick={onBtnClick}
+        style={{
+          paddingLeft: 15,
+          paddingRight: 15,
+          paddingTop: 8,
+          paddingBottom: 8
+        }}
+      >
         Delete
       </button>
     );

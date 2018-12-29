@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-
+import AllocationView from "../allocation_view/allocationView";
 
 let users = [
     {
@@ -52,6 +52,10 @@ class Search extends React.Component {
         });
     }
 
+    selectPerson = (id) => {
+        AllocationView.initialize(id);
+    }
+
     render() {
         let _users = this.state.users;
         let search = this.state.searchString.trim().toLowerCase();
@@ -77,7 +81,10 @@ class Search extends React.Component {
                     <ul className="pg-search-list">
                         {_users.map(l => {
                             return (
-                                <li className="pg-search-list">
+                                <li
+                                    className="pg-search-list"
+                                    onClick={() => this.selectPerson(l.name)}
+                                >
                                     {l.name} <a href="#">{l.email}</a>
                                 </li>
                             );
