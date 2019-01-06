@@ -1,68 +1,29 @@
 import React, { Component } from "react";
-import AllocationView from "../allocation_view/allocationView";
 
-let users = [
-    {
-        name: "Vijay",
-    },
-    {
-        name: "Chris",
-    },
-    {
-        name: "Erika",
-
-    },
-    {
-        name: "Filip",
-
-    },
-    {
-        name: "Leia",
-
-    },
-    {
-        name: "Anna",
-    },
-    {
-        name: "Zaid",
-    },
-
-];
-
-class Search extends React.Component {
+class Search extends Component {
     constructor(props) {
         super(props);
         this.state = {
             searchString: "",
-            users: []
         };
-        this.handleChange = this.handleChange.bind(this);
     }
 
     componentDidMount() {
-        this.setState({
-            users: users
-        });
         this.refs.search.focus();
     }
 
-    handleChange() {
-        this.setState({
-            searchString: this.refs.search.value
-        });
-    }
-
-    selectPerson = (id) => {
-        AllocationView.initialize(id);
+    handleChange = () => {
+        this.setState({ searchString: this.refs.search.value });
     }
 
     render() {
-        let _users = this.state.users;
+        console.log("RENDER: Search.jsx");
+        let _users = this.props.persons;
         let search = this.state.searchString.trim().toLowerCase();
 
         if (search.length > 0) {
             _users = _users.filter(function (user) {
-                return user.name.toLowerCase().match(search);
+                return user.Name.toLowerCase().match(search);
             });
         }
 
@@ -83,9 +44,9 @@ class Search extends React.Component {
                             return (
                                 <li
                                     className="pg-search-list"
-                                    onClick={() => this.selectPerson(l.name)}
+                                    onClick={() => this.props.updateAllocationView(l.Id)}
                                 >
-                                    {l.name} <a href="#">{l.email}</a>
+                                    {l.Name} <a href="#">{l.email}</a>
                                 </li>
                             );
                         })}

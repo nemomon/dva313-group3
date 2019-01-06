@@ -9,7 +9,6 @@ const DEFAULT_EMP_RATE = "100";
 class AllocationView extends Component {
   constructor(props) {
     super(props);
-
     this.state = {};
 
     this.items = new vis.DataSet({});
@@ -18,19 +17,20 @@ class AllocationView extends Component {
     this.timeline = null;
     this.showEmptyGroups = true;
 
-    this.init();
+    this.preInit();
   }
 
-  init() {
+
+  /* fired before the timeline is created */
+  preInit() {
     this.createGroups();
-    this.getItems();
-    // this.calculateTimelineHeight();
   }
 
-  static initialize(id) {
-    //
+  /* fired after the timeline is created */
+  postInit() {
+    this.createTotalTimeline();
+    this.attachEvents();
   }
-
 
 
   /* Options and events for the timeline, events are delageted to class methods  */
@@ -85,21 +85,22 @@ class AllocationView extends Component {
 
   /* Fired when an item is added to the timeline */
   onAdd(item, callback) {
+
     if (item.group == ID_GROUP_TOTAL) {
       callback(null);
       return;
     }
-
     item.content = DEFAULT_EMP_RATE;
-    this.alertProjectEndExceeded(
-      item.end > this.groups.get(item.group).end,
-      item
-    );
+    this.alertProjectEndExceeded(item);
     callback(item);
+
+    this.createTotalTimeline();
+
   }
 
   onRemove(item, callback) {
     callback(item);
+    this.createTotalTimeline();
   }
 
   /* Fired continuously when an allocation is dragged.
@@ -107,17 +108,33 @@ class AllocationView extends Component {
      and if, display a warning.
   */
   onMoving(item, callback) {
-    this.alertProjectEndExceeded(
-      item.end > this.groups.get(item.group).end,
-      item
-    );
+    this.alertProjectEndExceeded(item);
     callback(item);
+
   }
 
   /* Fired when double clicking an allocation. */
   onUpdate(item, callback) {
-    item.content = prompt("Input employment rate:", item.content);
-    item.content != null ? callback(item) : callback(null);
+    let value = prompt("Input employment rate:", item.content);
+
+    if (value != null) {
+      value = value.trim();
+    }
+
+    if (value == "" || value < 0 || value > 200) {
+      callback(null);
+      return;
+    }
+
+    if (Math.floor(value) == value) {
+      item.content = value;
+      callback(item);
+      this.createTotalTimeline();
+    } else {
+      callback(null);
+
+    }
+
   }
 
   /* Fired when an item has been moved or dragged
@@ -129,6 +146,7 @@ class AllocationView extends Component {
     }
 
     callback(item);
+    this.createTotalTimeline();
   }
 
   /* Fired when the timeline has been drawn, is used to set
@@ -153,10 +171,12 @@ class AllocationView extends Component {
    *                        END EVENTS                        *
    ***********************************************************/
 
+
   /* helper function to display visual warning if the allocation exceed a projects end date */
-  alertProjectEndExceeded(alert, item) {
-    item.style = alert ? "background: rgba(175, 0, 0, 1);" : "";
+  alertProjectEndExceeded(item) {
+    item.style = item.end > this.groups.get(item.group).end ? "background: rgba(175, 0, 0, 1);" : "";
   }
+
 
   /* When react mounts the component, attatch the timeline to the div with id=timeline created in render() */
   componentDidMount() {
@@ -167,26 +187,147 @@ class AllocationView extends Component {
       this.groups,
       this.options
     );
+
+    this.postInit();
   }
 
-  /* ignore this function for now */
-  calculateTimelineHeight() {
-    this.options.height = this.groups.length * 50 + 70;
+
+  attachEvents() {
+    this.timeline.on('contextmenu', props => {
+      props.event.preventDefault();
+
+      if (props.item != null) {
+        let properties = this.timeline.getEventProperties(props.event);
+
+        this.splitAllocation(props.item, properties.snappedTime._d);
+
+      }
+    });
+
+    this.items.on("add", (event, props, args) => {
+
+      if (args != null && args.total) {
+
+        let heigth = (args.rate / 2) + "px";
+        let ele = document.getElementsByClassName(args.id)[0]
+        if (ele != undefined) {
+          ele.style.height = heigth;
+          this.timeline.redraw();
+        }
+      }
+    });
   }
 
-  getItems() {
-    let item = this.PHPController.getAllocations(1);
-    console.log(item);
-    item.forEach(item =>
-      this.items.add({
-        id: item.id,
-        content: item.content,
-        start: item.start,
-        end: item.end,
-        group: item.group
-      })
-    );
+
+  splitAllocation(allocId, splitDate) {
+    let alloc = this.items.get(allocId);
+    let startDate = alloc.start;
+    let endDate = alloc.end;
+    let empRate = alloc.content;
+    let group = alloc.group;
+
+    if (splitDate >= endDate || splitDate <= startDate) {
+      return;
+    }
+
+    this.items.remove(alloc.id); //TODO NEED TO BE REMOVED FROM THE LOCAL PHP CLASS ALSO
+
+    //ids are auto genereted here, can i querry a set of ids from the PHP-class?
+    let newItem1 = { content: empRate, start: startDate, end: splitDate, group: group }
+    let newItem2 = { content: empRate, start: splitDate, end: endDate, group: group }
+
+    this.alertProjectEndExceeded(newItem1);
+    this.alertProjectEndExceeded(newItem2);
+    this.items.add(newItem1);
+    this.items.add(newItem2);
+
   }
+
+
+  addAllocation(alloc) {
+    let newAlloc = {
+      id: parseInt(alloc.Id),
+      content: alloc.Percentage,
+      start: new Date(alloc.StartDate),
+      end: new Date(alloc.EndDate),
+      group: parseInt(alloc.ProjectId)
+    }
+
+    this.alertProjectEndExceeded(newAlloc);
+    this.items.add(newAlloc);
+  }
+
+
+  setTimelineHeight(groups) {
+    let heigth = groups * 50 + 70 + 200;
+    this.timeline.setOptions({ height: heigth });
+  }
+
+
+  createTotalTimeline() {
+    this.items.remove(this.items.get({ filter: function (item) { return item.group == ID_GROUP_TOTAL } }));
+
+    let totalSet = new vis.DataSet({});
+    let allocations = this.items.get();
+    let length = allocations.length;
+
+    if (length < 1) {
+      return;
+    }
+
+    for (var i = 0; i < length; i++) {
+      totalSet.add({
+        date: allocations[i].start
+      });
+      totalSet.add({
+        date: allocations[i].end
+      });
+    }
+
+    let sortedDates = totalSet.get({ fields: ['date'], order: "date", type: { date: 'Date' } });
+    var intersections = [];
+    var currentDate = sortedDates[0];
+
+    //extract the intersections
+    for (var i = 0; i < sortedDates.length; i++) {
+      if (currentDate.date < sortedDates[i].date) {
+        intersections.push({ 'start': currentDate.date, 'end': sortedDates[i].date });
+        currentDate = sortedDates[i];
+      }
+    }
+
+    // calculate contents
+    var sum;
+    for (var j = 0; j < intersections.length; j++) {
+      sum = 0;
+      for (var i = 0; i < allocations.length; i++) {
+        if (allocations[i]['start'] <= intersections[j]['start'] && allocations[i]['end'] >= intersections[j]['end']) {
+          sum = sum + parseInt(allocations[i]['content']);
+        }
+      }
+
+      if (sum > 0) {
+        this.addTotal(intersections[j]['start'], intersections[j]['end'], sum, j);
+      }
+    }
+  }
+
+
+  addTotal(start, end, rate, tag) {
+    let id = "totalItem-" + tag;
+
+    let newAlloc = {
+      content: "",
+      start: start,
+      end: end,
+      group: ID_GROUP_TOTAL,
+      className: id,
+    }
+
+    let args = { id: id, rate: rate, total: true };
+    this.items.add(newAlloc, args);
+  }
+
 
   /* ignore this function for now */
   createVisualBoundaries() {
@@ -203,15 +344,29 @@ class AllocationView extends Component {
   }
 
 
+  getAllocations(personId) {
+    if (personId == null) {
+      return;
+    }
+    this.PHPController.getAllocations(personId, allocations => this._getAllocations(allocations));
+  }
+
+
+  _getAllocations(allocations) {
+    this.items.clear();
+    allocations.forEach(item => this.addAllocation(item));
+  }
+
+
   createGroups() {
     this.PHPController.getProjects(projects => this._createGroups(projects));
   }
 
+
   _createGroups(projects) {
+    this.setTimelineHeight(projects.length);
 
-    console.log(projects);
-    this.groups.add({ id: ID_GROUP_TOTAL, content: "TOTAL" });
-
+    this.groups.add({ id: ID_GROUP_TOTAL, content: "TOTAL", className: "pg-totalTimeline" });
     /* the project id becomes the group id, also including the projects end date in the group for easy access
     when checking if an allocation exceed the end date */
     for (var i = 0; i < projects.length; i++) {
@@ -224,6 +379,7 @@ class AllocationView extends Component {
     }
   }
 
+
   /* toggle between hide/show of all groups with no allocations */
   toggleGroups = () => {
     this.showEmptyGroups = !this.showEmptyGroups;
@@ -234,30 +390,29 @@ class AllocationView extends Component {
       x => !(notEmptyGroups.indexOf(x) > -1) && x != ID_GROUP_TOTAL
     );
 
-    console.log(notEmptyGroups);
-    console.log(allGroups);
-    console.log(difference);
-
-
     for (var i = 0; i < difference.length; i++) {
       this.groups.update({ id: difference[i], visible: this.showEmptyGroups });
     }
 
-    /* let newHeight;
-     if (this.showEmptyGroups) {
-       newHeight = (allGroups.length * 50 + 70) + "px";
-     }
-     else {
-       newHeight = ((-difference.length * 50) + (allGroups.length * 50) + 70) + "px";
-     }
-     this.timeline.setOptions({ height: newHeight }); */
+    let height = this.showEmptyGroups ? allGroups.length : allGroups.length - difference.length;
+    this.setTimelineHeight(height);
   };
 
+
+  refreshTotal = () => {
+    this.createTotalTimeline();
+  }
+
+
   render() {
+    console.log("RENDER: AllocationView.jsx");
+    this.getAllocations(this.props.person);
+
     return (
       <div className="prog-av">
         <div className="prog-av-user">Leia Skywalker</div>
         <button onClick={this.toggleGroups}>TOGGLE</button>
+        <button onClick={this.refreshTotal}>UPDATE</button>
         <div className="prog-av-container">
           <div id="timeline" />
         </div>

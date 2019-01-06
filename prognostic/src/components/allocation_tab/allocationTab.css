@@ -104,3 +104,9 @@ body {
 .vis-panel {
     box-sizing: content-box;
 }
+
+.pg-totalTimeline .vis-item {
+    color: white;
+    background-color: rgba(134, 255, 184, 0.6);
+    border: 0;
+}

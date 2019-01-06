@@ -6,7 +6,6 @@ import * as serviceWorker from './serviceWorker';
 import PHPController from "./components/PHPController";
 import BrowserRouter from 'react-router-dom/BrowserRouter';
 
-//const _PHPController = new PHPController();
 
 const app = (
     <BrowserRouter>
