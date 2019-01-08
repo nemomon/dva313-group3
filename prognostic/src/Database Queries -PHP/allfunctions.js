@@ -10,8 +10,7 @@ class Person{
    getAllPerson() {
    var r = JSON.parse( $.ajax({
     type: 'POST',
-    url: 'getAllPerson.php',
-    async: false,
+    url: './src/Database Queries -PHP/getAllPerson.php',
     dataType: 'json',
     async: false,
     done: function(response) {
@@ -27,7 +26,7 @@ class Person{
  deletePerson(Id){
    var r = $.ajax({
     type: 'POST',
-    url: 'deletePerson.php',
+    url: './src/Database Queries -PHP/deletePerson.php',
 	data: {Id: Id},
     async: false,
     done: function(response) {
@@ -41,7 +40,7 @@ class Person{
  insertPerson(Name, Salary, SocialFactor, IncrementFactor){
    var r = $.ajax({
     type: 'POST',
-    url: 'insertPerson.php',
+    url: './src/Database Queries -PHP/insertPerson.php',
 	data: {Name: Name, Salary: Salary, SocialFactor: SocialFactor, IncrementFactor: IncrementFactor},
     async: false,
     done: function(response) {
@@ -56,7 +55,7 @@ class Person{
   updatePerson(Id, Name, Salary, SocialFactor, IncrementFactor){
 	var r = $.ajax({ 
     type: 'POST',
-    url: 'updatePerson.php',
+    url: './src/Database Queries -PHP/updatePerson.php',
     data: {Id: Id, Name: Name, Salary: Salary, SocialFactor: SocialFactor, IncrementFactor: IncrementFactor},
     async: false,
     done: function(response){
@@ -77,8 +76,7 @@ class Project {
    getAllProject() {
    var r = JSON.parse( $.ajax({
     type: 'POST',
-    url: 'getAllProject.php',
-    async: false,
+    url: './src/Database Queries -PHP/getAllProject.php',
     dataType: 'json',
     async: false,
     done: function(response) {
@@ -94,7 +92,7 @@ class Project {
  deleteProject(Id){
    var r = $.ajax({
     type: 'POST',
-    url: 'deleteProject.php',
+    url: './src/Database Queries -PHP/deleteProject.php',
 	data: {Id: Id},
     async: false,
     done: function(response) {
@@ -109,7 +107,7 @@ class Project {
  SpendingExternalOverhead, SpendingExternalOtherCost, SpendingInternalSalary, SpendingInternalOverhead, SpendingInternalOtherCost, SpendingDate, OverheadConstant){
    var r = $.ajax({
     type: 'POST',
-    url: 'insertProject.php',
+    url: './src/Database Queries -PHP/insertProject.php',
 	data: {Name: Name, EndDate: EndDate, Stl: Stl, ExternalSalary: ExternalSalary, ExternalOverhead: ExternalOverhead, ExternalOtherCost: ExternalOtherCost, 
 	InternalSalary: InternalSalary, InternalOverhead: InternalOverhead, InternalOtherCost: InternalOtherCost, SpendingExternalSalary: SpendingExternalSalary, 
 	SpendingExternalOverhead: SpendingExternalOverhead, SpendingExternalOtherCost: SpendingExternalOtherCost, 
@@ -128,7 +126,7 @@ class Project {
  SpendingExternalOverhead, SpendingExternalOtherCost, SpendingInternalSalary, SpendingInternalOverhead, SpendingInternalOtherCost, SpendingDate, OverheadConstant){
 	var r = $.ajax({ 
     type: 'POST',
-    url: 'updateProject.php',
+    url: './src/Database Queries -PHP/updateProject.php',
     data: {Id: Id, Name: Name, EndDate: EndDate, Stl: Stl, ExternalSalary: ExternalSalary, ExternalOverhead: ExternalOverhead, ExternalOtherCost: ExternalOtherCost, 
 	InternalSalary: InternalSalary, InternalOverhead: InternalOverhead, InternalOtherCost: InternalOtherCost, SpendingExternalSalary: SpendingExternalSalary, 
 	SpendingExternalOverhead: SpendingExternalOverhead, SpendingExternalOtherCost: SpendingExternalOtherCost, 
@@ -154,8 +152,7 @@ class Allocation {
    getAllAllocation() {
    var r = JSON.parse( $.ajax({
     type: 'POST',
-    url: 'getAllAllocation.php',
-    async: false,
+    url: './src/Database Queries -PHP/getAllAllocation.php',
     dataType: 'json',
     async: false,
     done: function(response) {
@@ -171,7 +168,7 @@ class Allocation {
  deleteAllocation(Id){
    var r = $.ajax({
     type: 'POST',
-    url: 'deleteAllocation.php',
+    url: './src/Database Queries -PHP/deleteAllocation.php',
 	data: {Id: Id},
     async: false,
     done: function(response) {
@@ -185,8 +182,8 @@ class Allocation {
  insertAllocation(personId, projectId, Percentage, StartDate, EndDate){
    var r = $.ajax({
     type: 'POST',
-    url: 'insertAllocation.php',
-	data: {personId: personId, projectId: projectId, Percentage: Percentage, StartDate: StartDate, EndDate: Enddate},
+    url: './src/Database Queries -PHP/insertAllocation.php',
+	data: {personId: personId, projectId: projectId, Percentage: Percentage, StartDate: StartDate, EndDate: EndDate},
     async: false,
     done: function(response) {
         return response;
@@ -200,7 +197,7 @@ class Allocation {
   updateAllocation(Id, Percentage, StartDate, EndDate){
 	var r = $.ajax({ 
     type: 'POST',
-    url: 'updateAllocation.php',
+    url: './src/Database Queries -PHP/updateAllocation.php',
     data: {Id: Id, Percentage: Percentage, StartDate: StartDate, EndDate: EndDate},
     async: false,
     done: function(response){
@@ -221,8 +218,7 @@ class Spending {
    getAllSpending() {
    var r = JSON.parse( $.ajax({
     type: 'POST',
-    url: 'getAllSpending.php',
-    async: false,
+    url: './src/Database Queries -PHP/getAllSpending.php',
     dataType: 'json',
     async: false,
     done: function(response) {
@@ -247,8 +243,7 @@ class EndBalance {
    getAllEndBalance() {
    var r = JSON.parse( $.ajax({
     type: 'POST',
-    url: 'getAllEndbalance.php',
-    async: false,
+    url: './src/Database Queries -PHP/getAllEndbalance.php',
     dataType: 'json',
     async: false,
     done: function(response) {
@@ -273,8 +268,7 @@ class Remaining {
    getAllRemaining() {
    var r = JSON.parse( $.ajax({
     type: 'POST',
-    url: 'getAllRemaining.php',
-    async: false,
+    url: './src/Database Queries -PHP/getAllRemaining.php',
     dataType: 'json',
     async: false,
     done: function(response) {

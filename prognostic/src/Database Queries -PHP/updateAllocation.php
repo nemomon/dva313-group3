@@ -5,7 +5,7 @@ session_start();
 
 
 
-$query = "UPDATE Allocation SET  Percentage = ".$_POST['Percentage'].", StartDate= '".$_POST['StartDate']."', EndDate = ".$_POST['EndDate']." WHERE Id=".$_POST['Id'];
+$query = "UPDATE Allocation SET  Percentage = ".$_POST['Percentage'].", StartDate= '".$_POST['StartDate']."', EndDate = '".$_POST['EndDate']."'  WHERE Id=".$_POST['Id'];
 
 if ($connect->query($query) === TRUE) {
     echo "Record updated successfully";

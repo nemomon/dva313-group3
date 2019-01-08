@@ -9,7 +9,8 @@ session_start();
 VALUES ('".$_POST['Name']."', '".$_POST['EndDate']."', ".$_POST['Stl'].",  ".$_POST['ExternalSalary'].", ".$_POST['ExternalOverhead'].",  ".$_POST['ExternalOtherCost'].",  ".$_POST['InternalSalary'].",  ".$_POST['InternalOverhead'].",  ".$_POST['InternalOtherCost'].",  ".$_POST['SpendingExternalSalary'].",  ".$_POST['SpendingExternalOverhead'].",  ".$_POST['SpendingExternalOtherCost'].",  ".$_POST['SpendingInternalSalary'].",  ".$_POST['SpendingInternalOverhead'].",  ".$_POST['SpendingInternalOtherCost'].",  '".$_POST['SpendingDate']."',  ".$_POST['OverheadConstant'].")";
 
 if ($connect->query($query) === TRUE) {
-    echo "New record created successfully";
+    $last_id = $connect->insert_id;
+    echo $last_id;
 } else {
     echo "Error: " . $query . "<br>" . $connect->error;
 }
