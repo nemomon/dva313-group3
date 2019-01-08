@@ -15,11 +15,21 @@ different repositories from the command line.
 
 5. DELETE THE my-app FODLER THAT YOU CREATED IN STEP 3
 
+6. RUN ALL COMMANDS LISTET IN THE "DEPENDENCIES" SECTION
+
 6. NAVIGATE INTO THE PROGNOSTIC FOLDER AND RUN: npm start
 
-7. IF SUCCESSFUL, YOU SHOULD SEE A REALLY UGLY PAGE.
+7. IF SUCCESSFUL, YOU SHOULD SEE A REALLY NICE PAGE.
 
+########################
+####   DEPENDENCIES ####
+########################
 
+Run all the commands in the prognostic folder:
+
+npm install --save mdbreact
+npm install --save vis
+npm install --save react-visjs-timeline
 
 
 #################################
@@ -29,7 +39,7 @@ different repositories from the command line.
 - The src/components folder contains our cosutom components that we create, name them with a .jsx extension.
 
 - In the src/app.js file we attatch our components in the render method, if you take a look at it, you see it have
-  an <Navigationbar/> and an <PersonTable/> for now.
+  an <Navigationbar/> and an <AllocationTab/> for now.
 
 - The src/index.js file renders the <app/> component into an DOM-element, in this case the element named 'root'.
 

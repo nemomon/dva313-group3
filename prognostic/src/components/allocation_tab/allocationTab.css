@@ -1,0 +1,83 @@
+body {
+    background: black;
+}
+
+.prog-at {
+    color: white;
+    margin: 25px 15px;
+    white-space: nowrap;
+
+}
+
+.prog-av {
+    background: black;
+    color: white;
+    float: left;
+    width: 90%;
+}
+
+.prog-av-container {
+    background: white;
+    color: black;
+    margin: 15px 15px 35px 15px;
+    border-bottom: 4px solid white;
+}
+
+.prog-av-total {
+    background: white;
+    color: black;
+    margin: 0px 15px 35px 15px;
+    border-bottom: 4px solid white;
+}
+
+
+.prog-av-name {
+    background: white;
+    font-weight: bold;
+    color: black;
+    padding: 10px;
+}
+
+.prog-av-user {
+    font-size: 24px;
+    margin: 0px 15px 10px 15px;
+    border-bottom: 1px solid white;
+
+}
+
+.vis-item {
+    color: white;
+    background-color: rgba(175, 0, 0, 0.404);
+    border: 1px solid darkred;
+}
+
+.vis-item:hover {
+    font-weight: bold;
+}
+
+.vis-group {
+    color: black;
+    background-color: rgba(255, 255, 255, 0.4);
+    border-color: black;
+}
+
+.vis-label .vis-inner {
+    min-height: 50px;
+}
+
+.vis-inner {
+    font-weight: bold;
+}
+
+
+.pg-search {
+    float: left;
+    width: 10%;
+}
+
+
+
+
+/*
+I have solved it using minHeight on this element in vis.css .vis-label .vis-inner
+*/
