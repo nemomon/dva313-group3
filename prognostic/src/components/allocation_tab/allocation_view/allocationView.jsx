@@ -13,6 +13,7 @@ class AllocationView extends Component {
 
     this.items = new vis.DataSet({});
     this.groups = new vis.DataSet({});
+    this.total = [];
     this.PHPController = new PHPController();
     this.timeline = null;
     this.showEmptyGroups = true;
@@ -20,10 +21,22 @@ class AllocationView extends Component {
     this.preInit();
   }
 
-
   /* fired before the timeline is created */
   preInit() {
     this.createGroups();
+  }
+
+  /* When react mounts the component, attatch the timeline to the div with id=timeline created in render() */
+  componentDidMount() {
+    let container = document.getElementById("timeline");
+    this.timeline = new vis.Timeline(
+      container,
+      this.items,
+      this.groups,
+      this.options
+    );
+
+    this.postInit();
   }
 
   /* fired after the timeline is created */
@@ -31,7 +44,6 @@ class AllocationView extends Component {
     this.createTotalTimeline();
     this.attachEvents();
   }
-
 
   /* Options and events for the timeline, events are delageted to class methods  */
   options = {
@@ -85,17 +97,15 @@ class AllocationView extends Component {
 
   /* Fired when an item is added to the timeline */
   onAdd(item, callback) {
-
     if (item.group == ID_GROUP_TOTAL) {
       callback(null);
       return;
     }
+
     item.content = DEFAULT_EMP_RATE;
     this.alertProjectEndExceeded(item);
     callback(item);
-
     this.createTotalTimeline();
-
   }
 
   onRemove(item, callback) {
@@ -110,7 +120,6 @@ class AllocationView extends Component {
   onMoving(item, callback) {
     this.alertProjectEndExceeded(item);
     callback(item);
-
   }
 
   /* Fired when double clicking an allocation. */
@@ -132,7 +141,6 @@ class AllocationView extends Component {
       this.createTotalTimeline();
     } else {
       callback(null);
-
     }
 
   }
@@ -178,38 +186,23 @@ class AllocationView extends Component {
   }
 
 
-  /* When react mounts the component, attatch the timeline to the div with id=timeline created in render() */
-  componentDidMount() {
-    let container = document.getElementById("timeline");
-    this.timeline = new vis.Timeline(
-      container,
-      this.items,
-      this.groups,
-      this.options
-    );
-
-    this.postInit();
-  }
-
-
   attachEvents() {
     this.timeline.on('contextmenu', props => {
       props.event.preventDefault();
-
       if (props.item != null) {
         let properties = this.timeline.getEventProperties(props.event);
-
         this.splitAllocation(props.item, properties.snappedTime._d);
-
       }
     });
 
+    this.timeline.on('rangechanged', (a, b, x) => {
+      this.updateTotalTimeline();
+    });
+
     this.items.on("add", (event, props, args) => {
-
       if (args != null && args.total) {
-
         let heigth = (args.rate / 2) + "px";
-        let ele = document.getElementsByClassName(args.id)[0]
+        let ele = document.getElementsByClassName(args.id)[0];
         if (ele != undefined) {
           ele.style.height = heigth;
           this.timeline.redraw();
@@ -259,8 +252,17 @@ class AllocationView extends Component {
 
 
   setTimelineHeight(groups) {
-    let heigth = groups * 50 + 70 + 200;
+    let heigth = groups * 50 + 70 + 150;
+    console.log(groups);
+    console.log(heigth);
     this.timeline.setOptions({ height: heigth });
+  }
+
+
+
+  updateTotalTimeline() {
+    this.items.remove(this.items.get({ filter: function (item) { return item.group == ID_GROUP_TOTAL } }));
+    this._createTotalTimeline();
   }
 
 
@@ -270,6 +272,7 @@ class AllocationView extends Component {
     let totalSet = new vis.DataSet({});
     let allocations = this.items.get();
     let length = allocations.length;
+    this.total = [];
 
     if (length < 1) {
       return;
@@ -307,27 +310,70 @@ class AllocationView extends Component {
       }
 
       if (sum > 0) {
-        this.addTotal(intersections[j]['start'], intersections[j]['end'], sum, j);
+        this.total.push({ start: intersections[j]['start'], end: intersections[j]['end'], rate: sum, tag: j })
+        // this.addTotal(intersections[j]['start'], intersections[j]['end'], sum, j);
       }
     }
+    this._createTotalTimeline();
   }
 
+  _createTotalTimeline() {
+    let length = this.total.length;
 
-  addTotal(start, end, rate, tag) {
-    let id = "totalItem-" + tag;
+    for (var i = 0; i < length; i++) {
 
-    let newAlloc = {
-      content: "",
-      start: start,
-      end: end,
-      group: ID_GROUP_TOTAL,
-      className: id,
+      let id = "totalItem-" + this.total[i].tag;
+      let rate = this.total[i].rate;
+      let color = this.getColor(rate);
+
+      let newAlloc = {
+        content: "",
+        start: this.total[i].start,
+        end: this.total[i].end,
+        group: ID_GROUP_TOTAL,
+        className: id,
+        editable: false,
+        style: color
+      }
+
+      let args = { id: id, rate: rate, total: true };
+      this.items.add(newAlloc, args);
     }
 
-    let args = { id: id, rate: rate, total: true };
-    this.items.add(newAlloc, args);
+
   }
 
+  /*
+    addTotal(start, end, rate, tag) {
+      let id = "totalItem-" + tag;
+  
+      let color = this.getColor(rate);
+  
+      let newAlloc = {
+        content: "",
+        start: start,
+        end: end,
+        group: ID_GROUP_TOTAL,
+        className: id,
+        editable: false,
+        style: color
+      }
+  
+      let args = { id: id, rate: rate, total: true };
+      this.items.add(newAlloc, args);
+    }
+  */
+
+  getColor(rate) {
+    if (rate <= 25) return "background: #b3ffb3";
+    if (rate <= 50) return "background: #99ff99";
+    if (rate <= 75) return "background: #80ff80";
+    if (rate <= 100) return "background: #66ff66";
+    if (rate <= 125) return "background: #ffff99";
+    if (rate <= 150) return "background: #ffcc99";
+
+    return "background: #ff6666";
+  }
 
   /* ignore this function for now */
   createVisualBoundaries() {
@@ -364,9 +410,7 @@ class AllocationView extends Component {
 
 
   _createGroups(projects) {
-    this.setTimelineHeight(projects.length);
-
-    this.groups.add({ id: ID_GROUP_TOTAL, content: "TOTAL", className: "pg-totalTimeline" });
+    this.groups.add({ id: ID_GROUP_TOTAL, content: "", className: "pg-totalTimeline" });
     /* the project id becomes the group id, also including the projects end date in the group for easy access
     when checking if an allocation exceed the end date */
     for (var i = 0; i < projects.length; i++) {
@@ -377,6 +421,8 @@ class AllocationView extends Component {
         visible: true
       });
     }
+
+    this.setTimelineHeight(this.groups.length);
   }
 
 
@@ -395,6 +441,7 @@ class AllocationView extends Component {
     }
 
     let height = this.showEmptyGroups ? allGroups.length : allGroups.length - difference.length;
+
     this.setTimelineHeight(height);
   };
 
