@@ -1,6 +1,6 @@
 import $ from "jquery";
 
-const BASE = "http://127.0.0.1/project/";
+const BASE = "http://localhost:8888/project/";
 
 class Person{
 

@@ -364,7 +364,7 @@ class AllocationView extends Component {
     }
   */
 
-  getColor(rate) {
+  getColor(rate) { //ERIKA
     if (rate <= 25) return "background: #b3ffb3";
     if (rate <= 50) return "background: #99ff99";
     if (rate <= 75) return "background: #80ff80";
@@ -493,8 +493,8 @@ class AllocationView extends Component {
     return (
       <div className="prog-av">
         <div className="prog-av-user">Leia Skywalker</div>
-        <button onClick={this.toggleGroups}>TOGGLE</button>
-        <button onClick={this.refreshTotal}>UPDATE</button>
+        <button className="togglebtn" onClick={this.toggleGroups}>TOGGLE</button>
+        <button className="updatebtn" onClick={this.refreshTotal}>UPDATE</button>
         <div className="prog-av-container">
           <div id="timeline" />
         </div>

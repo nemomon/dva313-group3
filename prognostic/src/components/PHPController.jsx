@@ -20,19 +20,23 @@ class PHPController {
   init() {
     let personClass = new Person();
     this.personClass = personClass;
-    this.personTable = personClass.getAllPerson();
+    //this.personTable = personClass.getAllPerson();
+    this.personTable = [];
 
     let projectClass = new Project(); // create an object from project class
     this.projectClass = projectClass;  // save the class object locally
-    this.projectTable = projectClass.getAllProject(); //create a local array for all projects
+    //this.projectTable = projectClass.getAllProject(); //create a local array for all projects
+    this.projectTable = [];
 
     let allocationClass = new Allocation();
     this.allocationClass = allocationClass;
-    this.allocationTable = allocationClass.getAllAllocation();
+    //this.allocationTable = allocationClass.getAllAllocation();
+    this.allocationTable = [];
 
     let endbalanceClass = new EndBalance();
     this.endbalanceClass = endbalanceClass;
-    this.endbalanceTable = endbalanceClass.getAllEndBalance();
+    //this.endbalanceTable = endbalanceClass.getAllEndBalance();
+    this.endbalanceTable = [];
 
     //let spendingClass = new Spending();
     //this.spendingClass= spendingClass;
@@ -40,7 +44,10 @@ class PHPController {
 
     let remainingClass = new Remaining();
     this.remainingClass = remainingClass;
-    this.remainingTable = remainingClass.getAllRemaining();
+    //this.remainingTable = remainingClass.getAllRemaining();
+    this.remainingTable = [];
+ 
+
 
     this.deletedPersons = [];
     this.deletedProjects = [];
