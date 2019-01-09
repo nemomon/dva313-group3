@@ -364,13 +364,13 @@ class AllocationView extends Component {
     }
   */
 
-  getColor(rate) { //ERIKA
-    if (rate <= 25) return "background: #b3ffb3";
-    if (rate <= 50) return "background: #99ff99";
-    if (rate <= 75) return "background: #80ff80";
-    if (rate <= 100) return "background: #66ff66";
-    if (rate <= 125) return "background: #ffff99";
-    if (rate <= 150) return "background: #ffcc99";
+  getColor(rate) {
+    if (rate <= 25) return "background: #00b894";
+    if (rate <= 50) return "background: #55efc4";
+    if (rate <= 75) return "background: ##ffeaa7";
+    if (rate <= 100) return "background: #fdcb6e";
+    if (rate <= 125) return "background: #e17055";
+    if (rate <= 150) return "background: #d63031";
 
     return "background: #ff6666";
   }
