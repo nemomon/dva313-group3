@@ -524,9 +524,10 @@ class AllocationView extends Component {
     this.getAllocations(this.props.personId);
     this.createTotalTimeline();
 
+
     return (
       <div className="prog-av">
-        <div className="prog-av-user">Leia Skywalker</div>
+        <div className="prog-av-user">{this.props.personName}</div>
         <button className="togglebtn" onClick={this.toggleGroups}>TOGGLE</button>
         <button className="updatebtn" onClick={this.refreshTotal}>UPDATE</button>
         <div className="prog-av-container">

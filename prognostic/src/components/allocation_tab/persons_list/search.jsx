@@ -44,7 +44,7 @@ class Search extends Component {
                             return (
                                 <li
                                     className="pg-search-list"
-                                    onClick={() => this.props.updateAllocationView(l.Id)}
+                                    onClick={() => this.props.updateAllocationView(l.Id, l.Name)}
                                 >
                                     {l.Name} <a href="#">{l.email}</a>
                                 </li>

@@ -12,7 +12,8 @@ class AllocationTab extends Component {
     this.PHPController = new PHPController();
 
     this.state = {
-      selectedPerson: null,
+      selectedId: null,
+      selectedName: "",
       persons: []
     }
 
@@ -26,8 +27,8 @@ class AllocationTab extends Component {
    // this.PHPController.getPersons(result => this.setState({ persons: result }));
   }
 
-  updateAllocationView = (id) => {
-    this.setState({ selectedPerson: id })
+  updateAllocationView = (id, name) => {
+    this.setState({ selectedId: id,  selectedName: name})
   }
 
   render() {
@@ -39,7 +40,9 @@ class AllocationTab extends Component {
           updateAllocationView={this.updateAllocationView}
           persons={this.state.persons}
         />
-        <AllocationView personId={this.state.selectedPerson} />
+        <AllocationView 
+        personId={this.state.selectedId}
+        personName={this.state.selectedName} />
       </div>
     );
   }
