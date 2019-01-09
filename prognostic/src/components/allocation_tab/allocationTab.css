@@ -90,6 +90,10 @@ I have solved it using minHeight on this element in vis.css .vis-label .vis-inne
     box-shadow: 0 7px 5px -5px rgb(31, 31, 31);
 }
 
+.togglebtn:active {
+    background-color: black;
+}
+
 .updatebtn{
     background-color:#232323;
     color: white;
@@ -105,6 +109,10 @@ I have solved it using minHeight on this element in vis.css .vis-label .vis-inne
 
 .updatebtn:hover{
     box-shadow: 0 7px 5px -5px rgb(31, 31, 31);
+}
+
+.updatebtn:active {
+    background-color: black;
 }
 
 
