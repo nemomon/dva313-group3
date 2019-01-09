@@ -1,5 +1,6 @@
-//person class
+import $ from "jquery";
 
+const BASE = "http://127.0.0.1/project/";
 
 class Person{
 
@@ -10,7 +11,7 @@ class Person{
    getAllPerson() {
    var r = JSON.parse( $.ajax({
     type: 'POST',
-    url: './src/Database Queries -PHP/getAllPerson.php',
+    url: BASE + 'getAllPerson.php',
     dataType: 'json',
     async: false,
     done: function(response) {
@@ -26,7 +27,7 @@ class Person{
  deletePerson(Id){
    var r = $.ajax({
     type: 'POST',
-    url: './src/Database Queries -PHP/deletePerson.php',
+    url: BASE +'deletePerson.php',
 	data: {Id: Id},
     async: false,
     done: function(response) {
@@ -40,7 +41,7 @@ class Person{
  insertPerson(Name, Salary, SocialFactor, IncrementFactor){
    var r = $.ajax({
     type: 'POST',
-    url: './src/Database Queries -PHP/insertPerson.php',
+    url: BASE + 'insertPerson.php',
 	data: {Name: Name, Salary: Salary, SocialFactor: SocialFactor, IncrementFactor: IncrementFactor},
     async: false,
     done: function(response) {
@@ -55,7 +56,7 @@ class Person{
   updatePerson(Id, Name, Salary, SocialFactor, IncrementFactor){
 	var r = $.ajax({ 
     type: 'POST',
-    url: './src/Database Queries -PHP/updatePerson.php',
+    url: BASE + 'updatePerson.php',
     data: {Id: Id, Name: Name, Salary: Salary, SocialFactor: SocialFactor, IncrementFactor: IncrementFactor},
     async: false,
     done: function(response){
@@ -76,7 +77,7 @@ class Project {
    getAllProject() {
    var r = JSON.parse( $.ajax({
     type: 'POST',
-    url: './src/Database Queries -PHP/getAllProject.php',
+    url: BASE + 'getAllProject.php',
     dataType: 'json',
     async: false,
     done: function(response) {
@@ -92,7 +93,7 @@ class Project {
  deleteProject(Id){
    var r = $.ajax({
     type: 'POST',
-    url: './src/Database Queries -PHP/deleteProject.php',
+    url: BASE + 'deleteProject.php',
 	data: {Id: Id},
     async: false,
     done: function(response) {
@@ -107,7 +108,7 @@ class Project {
  SpendingExternalOverhead, SpendingExternalOtherCost, SpendingInternalSalary, SpendingInternalOverhead, SpendingInternalOtherCost, SpendingDate, OverheadConstant){
    var r = $.ajax({
     type: 'POST',
-    url: './src/Database Queries -PHP/insertProject.php',
+    url: BASE + 'insertProject.php',
 	data: {Name: Name, EndDate: EndDate, Stl: Stl, ExternalSalary: ExternalSalary, ExternalOverhead: ExternalOverhead, ExternalOtherCost: ExternalOtherCost, 
 	InternalSalary: InternalSalary, InternalOverhead: InternalOverhead, InternalOtherCost: InternalOtherCost, SpendingExternalSalary: SpendingExternalSalary, 
 	SpendingExternalOverhead: SpendingExternalOverhead, SpendingExternalOtherCost: SpendingExternalOtherCost, 
@@ -122,11 +123,11 @@ class Project {
   
   
   
-  updateProject(Id, EndDate, Stl, ExternalSalary, ExternalOverhead, ExternalOtherCost, InternalSalary, InternalOverhead, InternalOtherCost, SpendingExternalSalary, 
+  updateProject(Id, Name, EndDate, Stl, ExternalSalary, ExternalOverhead, ExternalOtherCost, InternalSalary, InternalOverhead, InternalOtherCost, SpendingExternalSalary, 
  SpendingExternalOverhead, SpendingExternalOtherCost, SpendingInternalSalary, SpendingInternalOverhead, SpendingInternalOtherCost, SpendingDate, OverheadConstant){
 	var r = $.ajax({ 
     type: 'POST',
-    url: './src/Database Queries -PHP/updateProject.php',
+    url: BASE + 'updateProject.php',
     data: {Id: Id, Name: Name, EndDate: EndDate, Stl: Stl, ExternalSalary: ExternalSalary, ExternalOverhead: ExternalOverhead, ExternalOtherCost: ExternalOtherCost, 
 	InternalSalary: InternalSalary, InternalOverhead: InternalOverhead, InternalOtherCost: InternalOtherCost, SpendingExternalSalary: SpendingExternalSalary, 
 	SpendingExternalOverhead: SpendingExternalOverhead, SpendingExternalOtherCost: SpendingExternalOtherCost, 
@@ -152,7 +153,7 @@ class Allocation {
    getAllAllocation() {
    var r = JSON.parse( $.ajax({
     type: 'POST',
-    url: './src/Database Queries -PHP/getAllAllocation.php',
+    url: BASE + 'getAllAllocation.php',
     dataType: 'json',
     async: false,
     done: function(response) {
@@ -168,7 +169,7 @@ class Allocation {
  deleteAllocation(Id){
    var r = $.ajax({
     type: 'POST',
-    url: './src/Database Queries -PHP/deleteAllocation.php',
+    url: BASE + 'deleteAllocation.php',
 	data: {Id: Id},
     async: false,
     done: function(response) {
@@ -182,7 +183,7 @@ class Allocation {
  insertAllocation(personId, projectId, Percentage, StartDate, EndDate){
    var r = $.ajax({
     type: 'POST',
-    url: './src/Database Queries -PHP/insertAllocation.php',
+    url: BASE + 'insertAllocation.php',
 	data: {personId: personId, projectId: projectId, Percentage: Percentage, StartDate: StartDate, EndDate: EndDate},
     async: false,
     done: function(response) {
@@ -197,7 +198,7 @@ class Allocation {
   updateAllocation(Id, Percentage, StartDate, EndDate){
 	var r = $.ajax({ 
     type: 'POST',
-    url: './src/Database Queries -PHP/updateAllocation.php',
+    url: BASE +'updateAllocation.php',
     data: {Id: Id, Percentage: Percentage, StartDate: StartDate, EndDate: EndDate},
     async: false,
     done: function(response){
@@ -218,7 +219,7 @@ class Spending {
    getAllSpending() {
    var r = JSON.parse( $.ajax({
     type: 'POST',
-    url: './src/Database Queries -PHP/getAllSpending.php',
+    url: BASE + 'getAllSpending.php',
     dataType: 'json',
     async: false,
     done: function(response) {
@@ -243,7 +244,7 @@ class EndBalance {
    getAllEndBalance() {
    var r = JSON.parse( $.ajax({
     type: 'POST',
-    url: './src/Database Queries -PHP/getAllEndbalance.php',
+    url: BASE + 'getAllEndbalance.php',
     dataType: 'json',
     async: false,
     done: function(response) {
@@ -268,7 +269,7 @@ class Remaining {
    getAllRemaining() {
    var r = JSON.parse( $.ajax({
     type: 'POST',
-    url: './src/Database Queries -PHP/getAllRemaining.php',
+    url: BASE + 'getAllRemaining.php',
     dataType: 'json',
     async: false,
     done: function(response) {
@@ -280,3 +281,5 @@ class Remaining {
    return r;
   }
 }
+
+export {Person, Project, Allocation, Spending, EndBalance, Remaining};

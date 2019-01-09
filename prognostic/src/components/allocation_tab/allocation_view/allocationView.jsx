@@ -182,6 +182,7 @@ class AllocationView extends Component {
 
   /* helper function to display visual warning if the allocation exceed a projects end date */
   alertProjectEndExceeded(item) {
+    //console.log(item);
     item.style = item.end > this.groups.get(item.group).end ? "background: rgba(175, 0, 0, 1);" : "";
   }
 
@@ -223,9 +224,9 @@ class AllocationView extends Component {
       return;
     }
 
-    this.items.remove(alloc.id); //TODO NEED TO BE REMOVED FROM THE LOCAL PHP CLASS ALSO
+    this.items.remove(alloc.id); //TODO NEED TO BE REMOVED FROM THE LOCAL this.PHPController CLASS ALSO
 
-    //ids are auto genereted here, can i querry a set of ids from the PHP-class?
+    //ids are auto genereted here, can i querry a set of ids from the this.PHPController-class?
     let newItem1 = { content: empRate, start: startDate, end: splitDate, group: group }
     let newItem2 = { content: empRate, start: splitDate, end: endDate, group: group }
 
@@ -238,12 +239,13 @@ class AllocationView extends Component {
 
 
   addAllocation(alloc) {
+
     let newAlloc = {
       id: parseInt(alloc.Id),
       content: alloc.Percentage,
       start: new Date(alloc.StartDate),
       end: new Date(alloc.EndDate),
-      group: parseInt(alloc.ProjectId)
+      group: parseInt(alloc.projectId)
     }
 
     this.alertProjectEndExceeded(newAlloc);
@@ -253,7 +255,7 @@ class AllocationView extends Component {
 
   setTimelineHeight(rows, init) {
     let heigth = rows * 50 + 70 + 150;
-    init ? this.timeline.setOptions({ height: heigth }) : this.options.height = heigth;
+    init ? this.options.height = heigth : this.timeline.setOptions({ height: heigth });
   }
 
 
@@ -392,25 +394,57 @@ class AllocationView extends Component {
     if (personId == null) {
       return;
     }
-    this.PHPController.getAllocations(personId, allocations => this._getAllocations(allocations));
+
+    this.items.clear();
+    let allocations = this.PHPController.getAllocation(personId);
+    allocations.forEach(item => this.addAllocation(item));
+
+   // this.items.clear();
+   // allocations.forEach(item => this.addAllocation(item));
+
+    //this.this.PHPController.getAllocations(personId, allocations => this._getAllocations(allocations));
   }
 
 
-  _getAllocations(allocations) {
+ /* _getAllocations(allocations) {
     this.items.clear();
     allocations.forEach(item => this.addAllocation(item));
+  } */
+
+  createGroups() {
+
+  //  this.PHPController.getProjects(projects => this._createGroups(projects));
+
+    let projects = this.PHPController.getProjects();
+
+    this.groups.add({ id: ID_GROUP_TOTAL, content: "", className: "pg-totalTimeline" });
+    // the project id becomes the group id, also including the projects end date in the group for easy access
+   // when checking if an allocation exceed the end date 
+    for (var i = 0; i < projects.length; i++) {
+      this.groups.add({
+        id: parseInt(projects[i].Id),
+        content: projects[i].Name,
+        end: new Date(projects[i].EndDate),
+        visible: true
+      });
+    }
+
+    this.setTimelineHeight(this.groups.length, true);
   }
 
 
+
+
+/*
   createGroups() {
-    this.PHPController.getProjects(projects => this._createGroups(projects));
+    this.this.PHPController.getProjects(projects => this._createGroups(projects));
   }
 
 
   _createGroups(projects) {
     this.groups.add({ id: ID_GROUP_TOTAL, content: "", className: "pg-totalTimeline" });
-    /* the project id becomes the group id, also including the projects end date in the group for easy access
-    when checking if an allocation exceed the end date */
+    // the project id becomes the group id, also including the projects end date in the group for easy access
+   // when checking if an allocation exceed the end date 
     for (var i = 0; i < projects.length; i++) {
       this.groups.add({
         id: parseInt(projects[i].Id),
@@ -422,6 +456,8 @@ class AllocationView extends Component {
 
     this.setTimelineHeight(this.groups.length);
   }
+
+*/
 
 
   /* toggle between hide/show of all groups with no allocations */
@@ -440,7 +476,7 @@ class AllocationView extends Component {
 
     let height = this.showEmptyGroups ? allGroups.length : allGroups.length - difference.length;
 
-    this.setTimelineHeight(height);
+    this.setTimelineHeight(height, false);
   };
 
 
@@ -452,6 +488,7 @@ class AllocationView extends Component {
   render() {
     console.log("RENDER: AllocationView.jsx");
     this.getAllocations(this.props.person);
+    this.createTotalTimeline();
 
     return (
       <div className="prog-av">

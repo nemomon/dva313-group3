@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import PHPController from "./components/PHPController";
 import BrowserRouter from 'react-router-dom/BrowserRouter';
 
 

@@ -15,6 +15,7 @@ import AllocationView from "./components/allocation_tab/allocation_view/allocati
 
 
 class App extends Component {
+
   render() {
     return (
       /*  Attach the diffenrent components her to build the whole UI */
