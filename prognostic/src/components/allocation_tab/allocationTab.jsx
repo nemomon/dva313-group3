@@ -39,7 +39,7 @@ class AllocationTab extends Component {
           updateAllocationView={this.updateAllocationView}
           persons={this.state.persons}
         />
-        <AllocationView person={this.state.selectedPerson} />
+        <AllocationView personId={this.state.selectedPerson} />
       </div>
     );
   }

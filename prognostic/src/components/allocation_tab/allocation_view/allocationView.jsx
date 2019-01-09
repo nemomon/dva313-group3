@@ -97,18 +97,34 @@ class AllocationView extends Component {
 
   /* Fired when an item is added to the timeline */
   onAdd(item, callback) {
-    if (item.group == ID_GROUP_TOTAL) {
+    if (item.group == ID_GROUP_TOTAL || this.props.personId == null) {
       callback(null);
       return;
     }
 
+    let newAlloc = {
+      Id: "T" + item.id,
+      personId: this.props.personId,
+      projectId: item.group,   
+      Percentage: DEFAULT_EMP_RATE,
+      StartDate: item.start,
+      EndDate: item.end,
+      Flag: "I",
+    }
+
+    item.id = "T" + item.id;
     item.content = DEFAULT_EMP_RATE;
-    this.alertProjectEndExceeded(item);
-    callback(item);
-    this.createTotalTimeline();
+
+   this.PHPController.insertAllocation(newAlloc);
+   this.alertProjectEndExceeded(item);
+   callback(item);
+   this.createTotalTimeline();
   }
 
   onRemove(item, callback) {
+
+    let removeAlloc = {Id: item.id, Flag: "D"};
+    this.PHPController.deleteAllocation(removeAlloc);
     callback(item);
     this.createTotalTimeline();
   }
@@ -137,6 +153,10 @@ class AllocationView extends Component {
 
     if (Math.floor(value) == value) {
       item.content = value;
+
+      let updateAlloc = {Id: item.id, Flag: "U", StartDate: item.start, EndDate: item.end, Percentage: item.content};
+      this.PHPController.updateAllocation(updateAlloc);
+
       callback(item);
       this.createTotalTimeline();
     } else {
@@ -152,7 +172,8 @@ class AllocationView extends Component {
       callback(null);
       return;
     }
-
+    let updateAlloc = {Id: item.id, Flag: "U", StartDate: item.start, EndDate: item.end, Percentage: item.content};
+    this.PHPController.updateAllocation(updateAlloc);
     callback(item);
     this.createTotalTimeline();
   }
@@ -182,7 +203,6 @@ class AllocationView extends Component {
 
   /* helper function to display visual warning if the allocation exceed a projects end date */
   alertProjectEndExceeded(item) {
-    //console.log(item);
     item.style = item.end > this.groups.get(item.group).end ? "background: rgba(175, 0, 0, 1);" : "";
   }
 
@@ -240,14 +260,27 @@ class AllocationView extends Component {
 
   addAllocation(alloc) {
 
+
+    console.log(alloc);
+
     let newAlloc = {
+      id: alloc.Id,
+      content: alloc.Percentage,
+      start: new Date(alloc.StartDate),
+      end: new Date(alloc.EndDate),
+      group: alloc.projectId
+    }
+
+ /*   let newAlloc = {
       id: parseInt(alloc.Id),
       content: alloc.Percentage,
       start: new Date(alloc.StartDate),
       end: new Date(alloc.EndDate),
       group: parseInt(alloc.projectId)
-    }
+    } */
 
+
+    console.log(newAlloc);
     this.alertProjectEndExceeded(newAlloc);
     this.items.add(newAlloc);
   }
@@ -364,16 +397,16 @@ class AllocationView extends Component {
     }
   */
 
-  getColor(rate) {
-    if (rate <= 25) return "background: #b3ffb3";
-    if (rate <= 50) return "background: #99ff99";
-    if (rate <= 75) return "background: #80ff80";
-    if (rate <= 100) return "background: #66ff66";
-    if (rate <= 125) return "background: #ffff99";
-    if (rate <= 150) return "background: #ffcc99";
+ getColor(rate) {
+  if (rate <= 25) return "background: #00b894";
+  if (rate <= 50) return "background: #55efc4";
+  if (rate <= 75) return "background: #ffeaa7";
+  if (rate <= 100) return "background: #fdcb6e";
+  if (rate <= 125) return "background: #e17055";
+  if (rate <= 150) return "background: #d63031";
 
-    return "background: #ff6666";
-  }
+  return "background: #ff6666";
+}
 
   /* ignore this function for now */
   createVisualBoundaries() {
@@ -397,6 +430,7 @@ class AllocationView extends Component {
 
     this.items.clear();
     let allocations = this.PHPController.getAllocation(personId);
+
     allocations.forEach(item => this.addAllocation(item));
 
    // this.items.clear();
@@ -487,7 +521,7 @@ class AllocationView extends Component {
 
   render() {
     console.log("RENDER: AllocationView.jsx");
-    this.getAllocations(this.props.person);
+    this.getAllocations(this.props.personId);
     this.createTotalTimeline();
 
     return (

@@ -21,6 +21,7 @@ class PHPController {
     let personClass = new Person();
     this.personClass = personClass;
     this.personTable = personClass.getAllPerson();
+    
 
     let projectClass = new Project(); // create an object from project class
     this.projectClass = projectClass;  // save the class object locally
@@ -176,7 +177,6 @@ class PHPController {
     if (newAllocation['Id'].charAt(0) == 'T' && newAllocation['Flag'] == 'I') {
       this.allocationTable.push(newAllocation);
     }
-
   }
 
   updateAllocation(allocation) {
