@@ -47,6 +47,9 @@ class NavigationBar extends React.Component {
               <NavLink to="/endBalanceTable">End Balance</NavLink>
             </NavItem>
             <NavItem>
+              <NavLink to="">Save File</NavLink>
+            </NavItem>
+            <NavItem>
               <Dropdown>
                 <DropdownToggle nav caret>
                   <div className="d-none d-md-inline">Add</div>
