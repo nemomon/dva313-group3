@@ -397,16 +397,16 @@ class AllocationView extends Component {
     }
   */
 
- getColor(rate) {
-  if (rate <= 25) return "background: #00b894";
-  if (rate <= 50) return "background: #55efc4";
-  if (rate <= 75) return "background: #ffeaa7";
-  if (rate <= 100) return "background: #fdcb6e";
-  if (rate <= 125) return "background: #e17055";
-  if (rate <= 150) return "background: #d63031";
+  getColor(rate) {
+    if (rate <= 25) return "background: #00b894";
+    if (rate <= 50) return "background: #55efc4";
+    if (rate <= 75) return "background: ##ffeaa7";
+    if (rate <= 100) return "background: #fdcb6e";
+    if (rate <= 125) return "background: #e17055";
+    if (rate <= 150) return "background: #d63031";
 
-  return "background: #ff6666";
-}
+    return "background: #ff6666";
+  }
 
   /* ignore this function for now */
   createVisualBoundaries() {
@@ -527,8 +527,8 @@ class AllocationView extends Component {
     return (
       <div className="prog-av">
         <div className="prog-av-user">Leia Skywalker</div>
-        <button onClick={this.toggleGroups}>TOGGLE</button>
-        <button onClick={this.refreshTotal}>UPDATE</button>
+        <button className="togglebtn" onClick={this.toggleGroups}>TOGGLE</button>
+        <button className="updatebtn" onClick={this.refreshTotal}>UPDATE</button>
         <div className="prog-av-container">
           <div id="timeline" />
         </div>

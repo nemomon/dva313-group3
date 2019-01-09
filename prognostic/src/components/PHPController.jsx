@@ -22,7 +22,6 @@ class PHPController {
     this.personClass = personClass;
     this.personTable = personClass.getAllPerson();
     
-
     let projectClass = new Project(); // create an object from project class
     this.projectClass = projectClass;  // save the class object locally
     this.projectTable = projectClass.getAllProject(); //create a local array for all projects
@@ -31,9 +30,11 @@ class PHPController {
     this.allocationClass = allocationClass;
     this.allocationTable = allocationClass.getAllAllocation();
 
+
     let endbalanceClass = new EndBalance();
     this.endbalanceClass = endbalanceClass;
     this.endbalanceTable = endbalanceClass.getAllEndBalance();
+
 
     //let spendingClass = new Spending();
     //this.spendingClass= spendingClass;
