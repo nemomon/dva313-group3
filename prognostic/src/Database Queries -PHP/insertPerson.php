@@ -9,7 +9,8 @@ session_start();
 VALUES ('".$_POST['Name']."', ".$_POST['Salary'].", ".$_POST['SocialFactor'].", ".$_POST['IncrementFactor'].")";
 
 if ($connect->query($query) === TRUE) {
-    echo "New record created successfully";
+    $last_id = $connect->insert_id;
+    echo $last_id;
 } else {
     echo "Error: " . $query . "<br>" . $connect->error;
 }
