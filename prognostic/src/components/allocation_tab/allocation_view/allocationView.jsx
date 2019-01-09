@@ -251,11 +251,9 @@ class AllocationView extends Component {
   }
 
 
-  setTimelineHeight(groups) {
-    let heigth = groups * 50 + 70 + 150;
-    console.log(groups);
-    console.log(heigth);
-    this.timeline.setOptions({ height: heigth });
+  setTimelineHeight(rows, init) {
+    let heigth = rows * 50 + 70 + 150;
+    init ? this.timeline.setOptions({ height: heigth }) : this.options.height = heigth;
   }
 
 
