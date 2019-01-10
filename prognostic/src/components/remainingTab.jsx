@@ -1,25 +1,7 @@
 import React, { Component } from "react";
 import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
 import "react-bootstrap-table/dist/react-bootstrap-table-all.min.css";
-
-//https://react-bootstrap-table.github.io/react-bootstrap-table2/storybook/index.html?selectedKind=Welcome&selectedStory=react%20bootstrap%20table%202%20&full=0&addons=1&stories=1&panelRight=0&addonPanel=storybook%2Factions%2Factions-panel
-
-const products = [];
-
-function addProduct(nam, sDate, eSal, eOH, eOC, iSal, iOH, iOC) {
-  const id = products.length + 1;
-  products.push({
-    //id: id,
-    name: nam,
-    spendingDate: sDate,
-    extSalary: eSal,
-    extOverhead: eOH,
-    extOtherCosts: eOC,
-    intSalary: iSal,
-    intOverhead: iOH,
-    intOtherCosts: iOC
-  });
-}
+import PHPController from "./PHPController";
 
 const cellEditProp = {
   mode: "click"
@@ -28,44 +10,63 @@ const cellEditProp = {
 class remainingTab extends Component {
   constructor(props) {
     super(props);
+    this.PHPController = new PHPController();
+    this.state = {
+      remainings: [],
+      hidden: true
+    };
     this.options = {
-      defaultSortName: "name",
+      defaultSortName: "Name",
       defaultSortOrder: "desc"
     };
   }
 
+  componentDidMount() {
+    let remainings = this.PHPController.getRemainings();
+    this.setState({ remainings: remainings });
+  }
+
   render() {
     return (
-      <div>
+      <div className="tableDiv">
         <BootstrapTable
-          data={products}
+          data={this.state.remainings}
           cellEdit={cellEditProp}
           tableStyle={{
             backgroundColor: "#eeeeee"
           }}
         >
-          <TableHeaderColumn dataField="name" isKey={true} dataSort={true}>
+          <TableHeaderColumn
+            dataField="Id"
+            isKey={true}
+            dataSort={true}
+            hidden={this.state.hidden}
+            autoValue={true}
+          >
+            Id
+          </TableHeaderColumn>
+          <TableHeaderColumn dataField="Name" dataSort={true}>
             Name
           </TableHeaderColumn>
-          <TableHeaderColumn dataField="spendingDate" dataSort={true}>
-            End Date
+          <TableHeaderColumn dataField="SpendingDate" dataSort={true}>
+            Spending Date
           </TableHeaderColumn>
-          <TableHeaderColumn dataField="extSalary" dataSort={true}>
+          <TableHeaderColumn dataField="ExternalSalary" dataSort={true}>
             Ext. Salary
           </TableHeaderColumn>
-          <TableHeaderColumn dataField="extOverhead" dataSort={true}>
+          <TableHeaderColumn dataField="ExternalOverhead" dataSort={true}>
             Ext. Overhead
           </TableHeaderColumn>
-          <TableHeaderColumn dataField="extOtherCosts" dataSort={true}>
+          <TableHeaderColumn dataField="ExternalOtherCost" dataSort={true}>
             Ext. Other Costs
           </TableHeaderColumn>
-          <TableHeaderColumn dataField="intSalary" dataSort={true}>
+          <TableHeaderColumn dataField="InternalSalary" dataSort={true}>
             Int. Salary
           </TableHeaderColumn>
-          <TableHeaderColumn dataField="intOverhead" dataSort={true}>
+          <TableHeaderColumn dataField="InternalOverhead" dataSort={true}>
             Int. Overhead
           </TableHeaderColumn>
-          <TableHeaderColumn dataField="intOtherCosts" dataSort={true}>
+          <TableHeaderColumn dataField="InternalOtherCost" dataSort={true}>
             Int. Other Costs
           </TableHeaderColumn>
         </BootstrapTable>

@@ -1,37 +1,7 @@
 import React, { Component } from "react";
 import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
 import "react-bootstrap-table/dist/react-bootstrap-table-all.min.css";
-
-//https://react-bootstrap-table.github.io/react-bootstrap-table2/storybook/index.html?selectedKind=Welcome&selectedStory=react%20bootstrap%20table%202%20&full=0&addons=1&stories=1&panelRight=0&addonPanel=storybook%2Factions%2Factions-panel
-
-const products = [];
-
-function addProduct(nam, sal, soc, inc) {
-  const id = products.length + 1;
-  products.push({
-    //id: id,
-    name: nam,
-    salary: sal,
-    social: soc,
-    increment: inc
-  });
-}
-
-// Dummy values below. Remove later.
-// vvv
-function rand() {
-  return Math.floor(Math.random() * 10000) + 1;
-}
-addProduct("Filip", rand(), rand(), rand());
-addProduct("Christoffer", rand(), rand(), rand());
-addProduct("Erika", rand(), rand(), rand());
-addProduct("Sai", rand(), rand(), rand());
-addProduct("Zaid", rand(), rand(), rand());
-addProduct("Osamah", rand(), rand(), rand());
-addProduct("Mohammed", rand(), rand(), rand());
-addProduct("Matko", rand(), rand(), rand());
-// ^^^
-// End of dummy values
+import PHPController from "./PHPController";
 
 const cellEditProp = {
   mode: "click"
@@ -40,15 +10,35 @@ const cellEditProp = {
 class personTab extends Component {
   constructor(props) {
     super(props);
+    this.PHPController = new PHPController();
+    this.state = {
+      persons: [],
+      hidden: true
+    };
     this.options = {
-      defaultSortName: "name",
+      defaultSortName: "Name",
       defaultSortOrder: "desc"
     };
   }
 
+  componentDidMount() {
+    let persons = this.PHPController.getPersons();
+    this.setState({ persons: persons });
+  }
+
   createCustomInsertButton = openModal => {
     return (
-      <button type="button" class="btn btn-dark m-1" onClick={openModal}>
+      <button
+        type="button"
+        className="btn btn-dark m-1"
+        onClick={openModal}
+        style={{
+          paddingLeft: 15,
+          paddingRight: 15,
+          paddingTop: 8,
+          paddingBottom: 8
+        }}
+      >
         Add
       </button>
     );
@@ -56,25 +46,69 @@ class personTab extends Component {
 
   createCustomDeleteButton = onBtnClick => {
     return (
-      <button type="button" class="btn btn-dark m-1" onClick={onBtnClick}>
+      <button
+        type="button"
+        className="btn btn-dark m-1"
+        onClick={onBtnClick}
+        style={{
+          paddingLeft: 15,
+          paddingRight: 15,
+          paddingTop: 8,
+          paddingBottom: 8
+        }}
+      >
         Delete
       </button>
     );
   };
 
+  onAfterInsertRow(row) {
+    row.Id = "T" + row.Id;
+    this.PHPController = new PHPController();
+    let newPerson = {
+      Id: row["Id"],
+      Name: row["Name"],
+      Salary: row["Salary"],
+      SocialFactor: row["SocialFactor"],
+      IncrementFactor: row["IncrementFactor"],
+      Flag: "I"
+    };
+    this.PHPController.insertPerson(newPerson);
+  }
+
+  onAfterDeleteRow(rowKeys, rows) {
+    console.log(rowKeys);
+    console.log(rows);
+    let PHP = new PHPController();
+    for (let i = 0; i < rows.length; i++) {
+      let id = rowKeys[i];
+      id = rowKeys[i];
+
+      let removePerson = {
+        Id: id,
+        Flag: "D"
+      };
+
+      console.log(removePerson);
+      PHP.deletePerson(removePerson);
+    }
+  }
+
   render() {
     const options = {
       insertBtn: this.createCustomInsertButton,
-      deleteBtn: this.createCustomDeleteButton
+      deleteBtn: this.createCustomDeleteButton,
+      afterInsertRow: this.onAfterInsertRow,
+      afterDeleteRow: this.onAfterDeleteRow
     };
     const selectRow = {
       mode: "checkbox"
     };
 
     return (
-      <div>
+      <div className="tableDiv">
         <BootstrapTable
-          data={products}
+          data={this.state.persons}
           cellEdit={cellEditProp}
           selectRow={selectRow}
           options={options}
@@ -84,16 +118,25 @@ class personTab extends Component {
             backgroundColor: "#eeeeee"
           }}
         >
-          <TableHeaderColumn dataField="name" isKey={true} dataSort={true}>
+          <TableHeaderColumn
+            dataField="Id"
+            isKey={true}
+            dataSort={true}
+            hidden={this.state.hidden}
+            autoValue={true}
+          >
+            Id
+          </TableHeaderColumn>
+          <TableHeaderColumn dataField="Name" dataSort={true}>
             Name
           </TableHeaderColumn>
-          <TableHeaderColumn dataField="salary" dataSort={true}>
+          <TableHeaderColumn dataField="Salary" dataSort={true}>
             Salary
           </TableHeaderColumn>
-          <TableHeaderColumn dataField="social" dataSort={true}>
+          <TableHeaderColumn dataField="SocialFactor" dataSort={true}>
             Social Factor
           </TableHeaderColumn>
-          <TableHeaderColumn dataField="increment" dataSort={true}>
+          <TableHeaderColumn dataField="IncrementFactor" dataSort={true}>
             Increment Factor
           </TableHeaderColumn>
         </BootstrapTable>

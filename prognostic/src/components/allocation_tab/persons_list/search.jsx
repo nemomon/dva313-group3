@@ -1,82 +1,52 @@
 import React, { Component } from "react";
 
-let users = [
-    {
-        name: "Vijay",
-    },
-    {
-        name: "Chris",
-    },
-    {
-        name: "erika",
-
-    },
-    {
-        name: "Filip",
-
-    },
-    {
-        name: "abc",
-
-    },
-    {
-        name: "cde",
-    },
-    {
-        name: "cgh",
-    },
-
-];
-
-class Search extends React.Component {
+class Search extends Component {
     constructor(props) {
         super(props);
         this.state = {
             searchString: "",
-            users: []
         };
-        this.handleChange = this.handleChange.bind(this);
     }
 
     componentDidMount() {
-        this.setState({
-            users: users
-        });
         this.refs.search.focus();
     }
 
-    handleChange() {
-        this.setState({
-            searchString: this.refs.search.value
-        });
+    handleChange = () => {
+        this.setState({ searchString: this.refs.search.value });
     }
 
     render() {
-        let _users = this.state.users;
+        console.log("RENDER: Search.jsx");
+        let _users = this.props.persons;
         let search = this.state.searchString.trim().toLowerCase();
 
         if (search.length > 0) {
             _users = _users.filter(function (user) {
-                return user.name.toLowerCase().match(search);
+                return user.Name.toLowerCase().match(search);
             });
         }
 
         return (
             <div className="pg-search">
-                <h3>search persons</h3>
+                <h2>SEARCH STAFFING</h2>
+
                 <div>
                     <input
                         type="text"
                         value={this.state.searchString}
                         ref="search"
                         onChange={this.handleChange}
-                        placeholder="type name here"
+                        placeholder="Type name here"
                     />
-                    <ul>
+                    <ul className="pg-search-list">
                         {_users.map(l => {
                             return (
-                                <li>
-                                    {l.name} <a href="#">{l.email}</a>
+                                <li
+                                    className="pg-search-list"
+                                    onClick={() => this.props.updateAllocationView(l.Id, l.Name)}
+                                >
+                                    {l.Name} <a href="#">{l.email}</a>
                                 </li>
                             );
                         })}
