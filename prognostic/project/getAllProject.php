@@ -2,6 +2,7 @@
  //fetch.php  
  session_start();
  include_once 'connect/dbh.inc.php'; // connect to database  
+
       $output = [];  
       $query = "SELECT * FROM `project";  
       $result = mysqli_query($connect, $query);

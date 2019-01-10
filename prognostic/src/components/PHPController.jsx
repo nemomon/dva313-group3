@@ -24,7 +24,8 @@ class PHPController {
     
     let projectClass = new Project(); // create an object from project class
     this.projectClass = projectClass;  // save the class object locally
-    this.projectTable = projectClass.getAllProject(); //create a local array for all projects
+    //this.projectTable = projectClass.getAllProject(); //create a local array for all projects
+    this.projectTable =[];
 
     let allocationClass = new Allocation();
     this.allocationClass = allocationClass;

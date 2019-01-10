@@ -3,11 +3,12 @@ import { Navbar, NavbarBrand, NavbarNav, NavItem, NavLink, NavbarToggler, Collap
 import "font-awesome/css/font-awesome.min.css";
 import "bootstrap-css-only/css/bootstrap.min.css";
 import "mdbreact/dist/css/mdb.css";
+import PHPController from "./PHPController.jsx";
 
 
 class NavigationBar extends React.Component {
   state = {
-    isOpen: false
+    isOpen: true
   };
 
   toggleCollapse = this.setState({ isOpen: !this.state.isOpen });
@@ -55,13 +56,15 @@ class NavigationBar extends React.Component {
                   <div className="d-none d-md-inline">Add</div>
                 </DropdownToggle>
                 <DropdownMenu right>
-                  <DropdownItem href="#!">Staff</DropdownItem>
-                  <DropdownItem href="#!">Project</DropdownItem>
+                  <DropdownItem href="/personTable">Staff</DropdownItem>
+                  <DropdownItem href="/projectTable">Project</DropdownItem>
                 </DropdownMenu>
               </Dropdown>
             </NavItem>
           </NavbarNav>
-          <NavItem>
+          <NavItem
+           onClick={()=> (new PHPController()).saveAll()}
+            >
             <NavLink className="navbarSave" to="#!">SAVE CHANGES /</NavLink>
           </NavItem>
         </Collapse>
