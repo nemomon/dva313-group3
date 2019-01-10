@@ -1,27 +1,7 @@
 import React, { Component } from "react";
 import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
 import "react-bootstrap-table/dist/react-bootstrap-table-all.min.css";
-
-//https://react-bootstrap-table.github.io/react-bootstrap-table2/storybook/index.html?selectedKind=Welcome&selectedStory=react%20bootstrap%20table%202%20&full=0&addons=1&stories=1&panelRight=0&addonPanel=storybook%2Factions%2Factions-panel
-
-const products = [];
-
-function addProduct(nam, eDate, eSal, eOH, eOC, iSal, iOH, iOC, OHc, s) {
-  const id = products.length + 1;
-  products.push({
-    //id: id,
-    name: nam,
-    endDate: eDate,
-    extSalary: eSal,
-    extOverhead: eOH,
-    extOtherCosts: eOC,
-    intSalary: iSal,
-    intOverhead: iOH,
-    intOtherCosts: iOC,
-    OHconst: OHc,
-    stl: s
-  });
-}
+import PHPController from "./PHPController";
 
 const cellEditProp = {
   mode: "click"
@@ -30,10 +10,20 @@ const cellEditProp = {
 class projectTab extends Component {
   constructor(props) {
     super(props);
+    this.PHPController = new PHPController();
+    this.state = {
+      projects: [],
+      hidden: true
+    };
     this.options = {
-      defaultSortName: "name",
+      defaultSortName: "Name",
       defaultSortOrder: "desc"
     };
+  }
+
+  componentDidMount() {
+    let projects = this.PHPController.getProjects();
+    this.setState({ projects: projects });
   }
 
   createCustomInsertButton = openModal => {
@@ -72,10 +62,46 @@ class projectTab extends Component {
     );
   };
 
+  onAfterInsertRow(row) {
+    row.Id = "T" + row.Id;
+    this.PHPController = new PHPController();
+    let newProject = {
+      Id: row["Id"],
+      Name: row["Name"],
+      EndDate: row["EndDate"],
+      ExternalSalary: row["ExternalSalary"],
+      ExternalOverhead: row["ExternalOverhead"],
+      ExternalOtherCost: row["ExternalOtherCost"],
+      InternalSalary: row["InternalSalary"],
+      InternalOverhead: row["InternalOverhead"],
+      InternalOtherCost: row["InternalOtherCost"],
+      OverheadConstant: row["OverheadConstant"],
+      Stl: row["Stl"],
+      Flag: "I"
+    };
+    this.PHPController.insertProject(newProject);
+  }
+
+  onAfterDeleteRow(rowKeys, rows) {
+    let PHP = new PHPController();
+    for (let i = 0; i < rows.length; i++) {
+      let id = rowKeys[i];
+      id = rowKeys[i];
+
+      let removeProject = {
+        Id: id,
+        Flag: "D"
+      };
+      PHP.deleteProject(removeProject);
+    }
+  }
+
   render() {
     const options = {
       insertBtn: this.createCustomInsertButton,
-      deleteBtn: this.createCustomDeleteButton
+      deleteBtn: this.createCustomDeleteButton,
+      afterInsertRow: this.onAfterInsertRow,
+      afterDeleteRow: this.onAfterDeleteRow
     };
     const selectRow = {
       mode: "checkbox"
@@ -84,7 +110,7 @@ class projectTab extends Component {
     return (
       <div className="tableDiv">
         <BootstrapTable
-          data={products}
+          data={this.state.projects}
           cellEdit={cellEditProp}
           selectRow={selectRow}
           options={options}
@@ -94,34 +120,43 @@ class projectTab extends Component {
             backgroundColor: "#eeeeee"
           }}
         >
-          <TableHeaderColumn dataField="name" isKey={true} dataSort={true}>
+          <TableHeaderColumn
+            dataField="Id"
+            isKey={true}
+            dataSort={true}
+            hidden={this.state.hidden}
+            autoValue={true}
+          >
+            Id
+          </TableHeaderColumn>
+          <TableHeaderColumn dataField="Name" dataSort={true}>
             Name
           </TableHeaderColumn>
-          <TableHeaderColumn dataField="endDate" dataSort={true}>
+          <TableHeaderColumn dataField="EndDate" dataSort={true}>
             End Date
           </TableHeaderColumn>
-          <TableHeaderColumn dataField="extSalary" dataSort={true}>
+          <TableHeaderColumn dataField="ExternalSalary" dataSort={true}>
             Ext. Salary
           </TableHeaderColumn>
-          <TableHeaderColumn dataField="extOverhead" dataSort={true}>
+          <TableHeaderColumn dataField="ExternalOverhead" dataSort={true}>
             Ext. Overhead
           </TableHeaderColumn>
-          <TableHeaderColumn dataField="extOtherCosts" dataSort={true}>
+          <TableHeaderColumn dataField="ExternalOtherCost" dataSort={true}>
             Ext. Other Costs
           </TableHeaderColumn>
-          <TableHeaderColumn dataField="intSalary" dataSort={true}>
+          <TableHeaderColumn dataField="InternalSalary" dataSort={true}>
             Int. Salary
           </TableHeaderColumn>
-          <TableHeaderColumn dataField="intOverhead" dataSort={true}>
+          <TableHeaderColumn dataField="InternalOverhead" dataSort={true}>
             Int. Overhead
           </TableHeaderColumn>
-          <TableHeaderColumn dataField="intOtherCosts" dataSort={true}>
+          <TableHeaderColumn dataField="InternalOtherCost" dataSort={true}>
             Int. Other Costs
           </TableHeaderColumn>
-          <TableHeaderColumn dataField="OHconst" dataSort={true}>
+          <TableHeaderColumn dataField="OverheadConstant" dataSort={true}>
             Overhead Const.
           </TableHeaderColumn>
-          <TableHeaderColumn dataField="stl" dataSort={true}>
+          <TableHeaderColumn dataField="Stl" dataSort={true}>
             STL
           </TableHeaderColumn>
         </BootstrapTable>

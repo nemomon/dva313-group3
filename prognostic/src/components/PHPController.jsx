@@ -49,7 +49,12 @@ class PHPController {
     this.deletedAllocations = [];
   }
 
-
+  getEndBalances() {
+    return this.endbalanceTable;
+  }
+  getRemainings() {
+    return this.remainingTable;
+  }
 
   //Person
   getPersons() {
