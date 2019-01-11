@@ -73,9 +73,9 @@ class PHPController {
     for (var i = 0; i < this.personTable.length; i++) {
              if(this.personTable[i]['Id']==person['Id'] && person['Flag'] =='D' && person['Id'].charAt(0) == 'T'){ //delete a person not exists in database
               this.personTable.splice(i, 1);
-              for (var i = 0; i < this.allocationTable.length; i++) {
-                if(this.allocationTable[i]['personId']==person['Id']){
-                  this.allocationTable.splice(i, 1);
+              for (var j = 0; j < this.allocationTable.length; i++) {
+                if(this.allocationTable[j]['personId']==person['Id']){
+                  this.allocationTable.splice(j, 1);
                 }
               }
             }
@@ -136,9 +136,9 @@ class PHPController {
     for (var i = 0; i < this.projectTable.length; i++) {
              if(this.projectTable[i]['Id']==project['Id'] && project['Flag'] =='D' && project['Id'].charAt(0) == 'T'){ //delete a person not exists in database
               this.projectTable.splice(i, 1);
-              for (var i = 0; i < this.allocationTable.length; i++) {
-                if(this.allocationTable[i]['projectId']==project['Id']){
-                  this.allocationTable.splice(i, 1);
+              for (var j = 0; j < this.allocationTable.length; j++) {
+                if(this.allocationTable[j]['projectId']==project['Id']){
+                  this.allocationTable.splice(j, 1);
                 }
               }
             }
