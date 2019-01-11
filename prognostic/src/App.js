@@ -7,7 +7,7 @@ import ProjectTab from "./components/projectTab";
 import SpendingTab from "./components/spendingTab";
 import RemainingTab from "./components/remainingTab";
 import EndBalanceTab from "./components/endBalanceTab";
-import { Route, NavLink } from "react-router-dom";
+import { Route, withRouter } from "react-router-dom";
 import BodyBackgroundColor from "react-body-backgroundcolor";
 import AllocationView from "./components/allocation_tab/allocation_view/allocationView";
 
@@ -22,7 +22,6 @@ class App extends Component {
       <BodyBackgroundColor backgroundColor='#3d3d3d'>
         <React.Fragment>
           <NavigationBar />
-          { this.props.children }
           <Route path="/allocationTable" component={AllocationTab} />
           <Route path="/personTable" component={PersonTab} />
           <Route path="/projectTable" component={ProjectTab} />
@@ -38,4 +37,4 @@ class App extends Component {
 }
 
 
-export default App;
+export default withRouter(App);
