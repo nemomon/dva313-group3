@@ -82,10 +82,10 @@ class PHPController {
                 else if (this.personTable[i]['Id']==person['Id'] && person['Flag'] =='D'){ //delete a person exists in the database
                  this.deletedPersons.push(person['Id']);
                  this.personTable.splice(i, 1);
-                 for (var i = 0; i < this.allocationTable.length; i++) {
-                  if(this.allocationTable[i]['personId']==person['Id']){
-                   this.deletedAllocations.push(this.allocationTable[i]['Id']);
-                   this.allocationTable.splice(i, 1);
+                 for (var j = 0; j < this.allocationTable.length; j++) {
+                  if(this.allocationTable[j]['personId']==person['Id']){
+                   this.deletedAllocations.push(this.allocationTable[j]['Id']);
+                   this.allocationTable.splice(j, 1);
                  }
                }
              }   
@@ -145,10 +145,10 @@ class PHPController {
                 else if (this.projectTable[i]['Id']==project['Id'] && project['Flag'] =='D'){ //delete a person exists in the database
                  this.deletedProjects.push(project['Id']);
                  this.projectTable.splice(i, 1);
-                 for (var i = 0; i < this.allocationTable.length; i++) {
-                  if(this.allocationTable[i]['projectId']==project['Id']){
-                    this.deletedAllocations.push(this.allocationTable[i]['Id']);
-                    this.allocationTable.splice(i, 1);
+                 for (var j = 0; j < this.allocationTable.length; j++) {
+                  if(this.allocationTable[j]['projectId']==project['Id']){
+                    this.deletedAllocations.push(this.allocationTable[j]['Id']);
+                    this.allocationTable.splice(j, 1);
                   }
                 }
               }   
