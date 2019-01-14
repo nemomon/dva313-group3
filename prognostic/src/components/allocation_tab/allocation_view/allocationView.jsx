@@ -42,7 +42,7 @@ class AllocationView extends Component {
 
   /* fired after the timeline is created */
   postInit() {
-    this.setTimelineHeight(this.groups.length, false);
+    //this.setTimelineHeight(this.groups.length, false);
     this.createTotalTimeline();
     this.attachEvents();
   }
@@ -63,8 +63,8 @@ class AllocationView extends Component {
       updateGroup: false,
       updateTime: true
     },
-    zoomMax: 1000 * 60 * 60 * 24 * 24 * 12,
-    zoomMin: 1000 * 60 * 60 * 24,
+    zoomMax: 1000 * 60 * 60 * 24 * 24 *365,
+    zoomMin: 1000 * 60 * 60 * 24 * 24,
     align: "center",
     stack: false,
     type: "range",
@@ -104,7 +104,6 @@ class AllocationView extends Component {
       return;
     }
 
-    console.log("onAdd()");
     let newAlloc = {
       Id: "T" + item.id,
       personId: this.props.personId,
@@ -219,7 +218,6 @@ class AllocationView extends Component {
     this.timeline.on('contextmenu', props => {
       props.event.preventDefault();
       if (props.item != null && props.group != ID_GROUP_TOTAL) {
-        console.log(props);
         let properties = this.timeline.getEventProperties(props.event);
         this.splitAllocation(props.item, properties.snappedTime._d);
       }
@@ -231,7 +229,6 @@ class AllocationView extends Component {
 
     this.items.on("add", (event, props, args) => {
 
-      console.log("DATASET onAdd");
 
       if (args != null && args.total) {
         let heigth = (args.rate / 2) + "px";
@@ -297,9 +294,6 @@ class AllocationView extends Component {
 
   addAllocation(alloc) {
 
-
-    console.log(alloc);
-
     let newAlloc = {
       id: alloc.Id,
       content: alloc.Percentage,
@@ -316,8 +310,6 @@ class AllocationView extends Component {
       group: parseInt(alloc.projectId)
     } */
 
-
-    console.log(newAlloc);
     this.alertProjectEndExceeded(newAlloc);
     this.items.add(newAlloc);
   }
@@ -325,21 +317,17 @@ class AllocationView extends Component {
 
   setTimelineHeight(rows, init) {
     let heigth = rows * 50 + 70 + 150;
-    console.log(rows);
-    console.log(init);
-    console.log(heigth);
     init ? this.options.height = heigth : this.timeline.setOptions({ height: heigth });
-    //this.timeline.redraw();
   }
 
 
-
+  /* lightweight version of the createTotalTimeline() method, used when an alloc have been moved or updated */
   updateTotalTimeline() {
     this.items.remove(this.items.get({ filter: function (item) { return item.group == ID_GROUP_TOTAL } }));
     this._createTotalTimeline();
   }
 
-
+  /* creates the total timeline based on the allocations in the timeline */
   createTotalTimeline() {
     this.items.remove(this.items.get({ filter: function (item) { return item.group == ID_GROUP_TOTAL } }));
 
@@ -365,7 +353,7 @@ class AllocationView extends Component {
     var intersections = [];
     var currentDate = sortedDates[0];
 
-    //extract the intersections
+    /* extract the intersections */
     for (var i = 0; i < sortedDates.length; i++) {
       if (currentDate.date < sortedDates[i].date) {
         intersections.push({ 'start': currentDate.date, 'end': sortedDates[i].date });
@@ -373,7 +361,7 @@ class AllocationView extends Component {
       }
     }
 
-    // calculate contents
+    /* calculate contents */
     var sum;
     for (var j = 0; j < intersections.length; j++) {
       sum = 0;
@@ -385,12 +373,15 @@ class AllocationView extends Component {
 
       if (sum > 0) {
         this.total.push({ start: intersections[j]['start'], end: intersections[j]['end'], rate: sum, tag: j })
-        // this.addTotal(intersections[j]['start'], intersections[j]['end'], sum, j);
       }
+
     }
     this._createTotalTimeline();
   }
 
+
+
+  /* helper function that add the items to the total timeline */
   _createTotalTimeline() {
     let length = this.total.length;
 
@@ -400,6 +391,7 @@ class AllocationView extends Component {
       let rate = this.total[i].rate;
       let color = this.getColor(rate);
 
+      /* the total item */
       let newAlloc = {
         content: "",
         start: this.total[i].start,
@@ -410,60 +402,28 @@ class AllocationView extends Component {
         style: color
       }
 
+      /* need to get the HTML-DOM element so i can change the height, can't reach it becuase vis-js 
+      is creating it internally, need to add an unique class (cant add ids) so i can grab the HTML-DOM
+      element in a callback method from vis-js and then change the hight */
       let args = { id: id, rate: rate, total: true };
       this.items.add(newAlloc, args);
     }
-
-
   }
 
-  /*
-    addTotal(start, end, rate, tag) {
-      let id = "totalItem-" + tag;
-  
-      let color = this.getColor(rate);
-  
-      let newAlloc = {
-        content: "",
-        start: start,
-        end: end,
-        group: ID_GROUP_TOTAL,
-        className: id,
-        editable: false,
-        style: color
-      }
-  
-      let args = { id: id, rate: rate, total: true };
-      this.items.add(newAlloc, args);
-    }
-  */
 
+  /* helper function for creating total timeline items, gets an color depending on the employmeent rate */
   getColor(rate) {
-    if (rate <= 25) return "background: #00b894";
-    if (rate <= 50) return "background: #55efc4";
-    if (rate <= 75) return "background: ##ffeaa7";
-    if (rate <= 100) return "background: #fdcb6e";
-    if (rate <= 125) return "background: #e17055";
+    if (rate <= 25) return "background: #00b855";
+    if (rate <= 50) return "background: #00e56b";
+    if (rate <= 75) return "background: #00ff77";
+    if (rate <= 100) return "background: #38ff94";
+    if (rate <= 125) return "background: #fdcb6e";
     if (rate <= 150) return "background: #d63031";
 
     return "background: #ff6666";
   }
 
-  /* ignore this function for now */
-  createVisualBoundaries() {
-    this.groups.forEach(item => {
-      if (item.id != ID_GROUP_TOTAL) {
-        this.items.add({
-          group: item.id,
-          start: item.end,
-          end: item.end,
-          type: "background"
-        });
-      }
-    });
-  }
-
-
+  /* retrives all allocations for one specific  person */
   getAllocations(personId) {
     if (personId == null) {
       return;
@@ -471,96 +431,62 @@ class AllocationView extends Component {
 
     this.items.clear();
     let allocations = this.PHPController.getAllocation(personId);
-
     allocations.forEach(item => this.addAllocation(item));
-
-   // this.items.clear();
-   // allocations.forEach(item => this.addAllocation(item));
-
-    //this.this.PHPController.getAllocations(personId, allocations => this._getAllocations(allocations));
   }
 
-
- /* _getAllocations(allocations) {
-    this.items.clear();
-    allocations.forEach(item => this.addAllocation(item));
-  } */
-
+  /* creates the timeline groups based on the existing projects */
   createGroups() {
-
-  //  this.PHPController.getProjects(projects => this._createGroups(projects));
-
     let projects = this.PHPController.getProjects();
-
     this.groups.add({ id: ID_GROUP_TOTAL, content: "", className: "pg-totalTimeline" });
-    // the project id becomes the group id, also including the projects end date in the group for easy access
-   // when checking if an allocation exceed the end date 
-    for (var i = 0; i < projects.length; i++) {
-     // console.log(projects[i]);
 
+    /* the project id becomes the group id */
+    for (var i = 0; i < projects.length; i++) {
       this.groups.add({
-        //id: parseInt(projects[i].Id),
         id: projects[i].Id,
         content: projects[i].Name,
         end: new Date(projects[i].EndDate),
         visible: true
       });
-    }
-
-    //this.setTimelineHeight(this.groups.length, true);
+    }   
   }
-
-
-
-
-/*
-  createGroups() {
-    this.this.PHPController.getProjects(projects => this._createGroups(projects));
-  }
-
-
-  _createGroups(projects) {
-    this.groups.add({ id: ID_GROUP_TOTAL, content: "", className: "pg-totalTimeline" });
-    // the project id becomes the group id, also including the projects end date in the group for easy access
-   // when checking if an allocation exceed the end date 
-    for (var i = 0; i < projects.length; i++) {
-      this.groups.add({
-        id: parseInt(projects[i].Id),
-        content: projects[i].Name,
-        end: new Date(projects[i].EndDate),
-        visible: true
-      });
-    }
-
-    this.setTimelineHeight(this.groups.length);
-  }
-
-*/
-
 
   /* toggle between hide/show of all groups with no allocations */
   toggleGroups = () => {
     this.showEmptyGroups = !this.showEmptyGroups;
+    this.updateTimelineGroups();
+  };
 
+  /* Update the timeline when first rendered and when switching people */
+  updateTimelineGroups() {
     let notEmptyGroups = this.items.distinct("group");
     let allGroups = this.groups.getIds();
     let difference = allGroups.filter(
       x => !(notEmptyGroups.indexOf(x) > -1) && x != ID_GROUP_TOTAL
     );
 
+    /* setting all groups to visible before toggling (needed when switching people) */
+    this._showAllGroups();
     for (var i = 0; i < difference.length; i++) {
       this.groups.update({ id: difference[i], visible: this.showEmptyGroups });
     }
 
     let height = this.showEmptyGroups ? allGroups.length : allGroups.length - difference.length;
 
-    this.setTimelineHeight(height, false); 
- 
-  };
+    let iSTimelineInitialized = this.timeline? true : false;
 
+    if(iSTimelineInitialized) {
+      console.log("Timeline Initialized");
+      this.setTimelineHeight(height, false); 
+      this.timeline.redraw();
+    }
 
-  refreshTotal = () => {
-    this.createTotalTimeline();
+  } 
+
+  _showAllGroups() {
+    let allGroups = this.groups.getIds();
+    for (var i = 0; i < this.groups.length; i++) {
+      this.groups.update({ id: allGroups[i], visible: true });
+    }
   }
 
   render() {
@@ -568,13 +494,12 @@ class AllocationView extends Component {
   
     this.getAllocations(this.props.personId);
     this.createTotalTimeline();
-
+    this.updateTimelineGroups();
 
     return (
       <div className="prog-av">
         <div className="prog-av-user">{this.props.personName}</div>
         <button className="togglebtn" onClick={this.toggleGroups}>TOGGLE</button>
-        <button className="updatebtn" onClick={this.refreshTotal}>UPDATE</button>
         <div className="prog-av-container">
           <div id="timeline" />
         </div>
