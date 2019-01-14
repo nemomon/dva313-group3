@@ -42,7 +42,6 @@ class AllocationView extends Component {
 
   /* fired after the timeline is created */
   postInit() {
-    //this.setTimelineHeight(this.groups.length, false);
     this.createTotalTimeline();
     this.attachEvents();
   }
@@ -293,7 +292,6 @@ class AllocationView extends Component {
 
 
   addAllocation(alloc) {
-
     let newAlloc = {
       id: alloc.Id,
       content: alloc.Percentage,
@@ -302,18 +300,9 @@ class AllocationView extends Component {
       group: alloc.projectId
     }
 
- /*   let newAlloc = {
-      id: parseInt(alloc.Id),
-      content: alloc.Percentage,
-      start: new Date(alloc.StartDate),
-      end: new Date(alloc.EndDate),
-      group: parseInt(alloc.projectId)
-    } */
-
     this.alertProjectEndExceeded(newAlloc);
     this.items.add(newAlloc);
   }
-
 
   setTimelineHeight(rows, init) {
     let heigth = rows * 50 + 70 + 150;
