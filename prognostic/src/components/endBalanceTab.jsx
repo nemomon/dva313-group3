@@ -7,6 +7,16 @@ const cellEditProp = {
   mode: "click"
 };
 
+function activeFormatter(cell, row) {
+  let c = "gray";
+  if (parseInt(cell) < 0) c = "red";
+  return (
+    <span>
+      <strong style={{ color: c }}>{cell}</strong>
+    </span>
+  );
+}
+
 class endBalanceTab extends Component {
   constructor(props) {
     super(props);
@@ -26,9 +36,28 @@ class endBalanceTab extends Component {
     this.setState({ endbalances: endbalances });
   }
 
+  handleEvent = event => {
+    this.state.hidden = !this.state.hidden;
+    let endbalances = this.PHPController.getEndBalances();
+    this.setState({ endbalances: endbalances });
+  };
+
   render() {
     return (
       <div className="tableDiv">
+        <button
+          type="button"
+          class="btn btn-dark m-2"
+          onClick={this.handleEvent}
+          style={{
+            paddingLeft: 15,
+            paddingRight: 15,
+            paddingTop: 8,
+            paddingBottom: 8
+          }}
+        >
+          Toggle
+        </button>
         <BootstrapTable
           data={this.state.endbalances}
           cellEdit={cellEditProp}
@@ -40,7 +69,7 @@ class endBalanceTab extends Component {
             dataField="Id"
             isKey={true}
             dataSort={true}
-            hidden={this.state.hidden}
+            hidden={true}
             autoValue={true}
           >
             Id
@@ -48,22 +77,51 @@ class endBalanceTab extends Component {
           <TableHeaderColumn dataField="Name" dataSort={true}>
             Name
           </TableHeaderColumn>
-          <TableHeaderColumn dataField="ExternalSalary" dataSort={true}>
+          <TableHeaderColumn
+            dataField="ExternalSalary"
+            dataSort={true}
+            dataFormat={activeFormatter}
+          >
             Ext. Salary
           </TableHeaderColumn>
-          <TableHeaderColumn dataField="InternalSalary" dataSort={true}>
+          <TableHeaderColumn
+            dataField="InternalSalary"
+            dataSort={true}
+            hidden={this.state.hidden}
+            dataFormat={activeFormatter}
+          >
             Int. Salary
           </TableHeaderColumn>
-          <TableHeaderColumn dataField="ExternalOverhead" dataSort={true}>
+          <TableHeaderColumn
+            dataField="ExternalOverhead"
+            dataSort={true}
+            hidden={this.state.hidden}
+            dataFormat={activeFormatter}
+          >
             Ext. Overhead
           </TableHeaderColumn>
-          <TableHeaderColumn dataField="InternalOverhead" dataSort={true}>
+          <TableHeaderColumn
+            dataField="InternalOverhead"
+            dataSort={true}
+            hidden={this.state.hidden}
+            dataFormat={activeFormatter}
+          >
             Int. Overhead
           </TableHeaderColumn>
-          <TableHeaderColumn dataField="ExternalOtherCost" dataSort={true}>
+          <TableHeaderColumn
+            dataField="ExternalOtherCost"
+            dataSort={true}
+            hidden={this.state.hidden}
+            dataFormat={activeFormatter}
+          >
             Ext. Other Costs
           </TableHeaderColumn>
-          <TableHeaderColumn dataField="InternalOtherCost" dataSort={true}>
+          <TableHeaderColumn
+            dataField="InternalOtherCost"
+            dataSort={true}
+            hidden={this.state.hidden}
+            dataFormat={activeFormatter}
+          >
             Int. Other Costs
           </TableHeaderColumn>
         </BootstrapTable>
