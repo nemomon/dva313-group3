@@ -12,7 +12,7 @@ function activeFormatter(cell, row) {
   if (parseInt(cell) < 0) c = "red";
   return (
     <span>
-      <strong style={{ color: c }}>{cell}</strong>
+      <strong style={{ color: c }}>{parseInt(cell)}</strong>
     </span>
   );
 }
