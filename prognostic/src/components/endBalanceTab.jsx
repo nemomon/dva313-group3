@@ -17,6 +17,24 @@ function activeFormatter(cell, row) {
   );
 }
 
+function activeFormatter2(cell, row) {
+  let value =
+    parseInt(row["InternalOverhead"]) +
+    parseInt(row["ExternalOverhead"]) +
+    parseInt(row["InternalSalary"]) +
+    parseInt(row["ExternalSalary"]) +
+    parseInt(row["InternalOtherCost"]) +
+    parseInt(row["ExternalOtherCost"]);
+
+  let c = "gray";
+  if (value < 0) c = "red";
+  return (
+    <span>
+      <strong style={{ color: c }}>{value}</strong>
+    </span>
+  );
+}
+
 class endBalanceTab extends Component {
   constructor(props) {
     super(props);
@@ -78,8 +96,16 @@ class endBalanceTab extends Component {
             Name
           </TableHeaderColumn>
           <TableHeaderColumn
+            dataField="EndBalance"
+            dataSort={true}
+            dataFormat={activeFormatter2}
+          >
+            End Balance
+          </TableHeaderColumn>
+          <TableHeaderColumn
             dataField="ExternalSalary"
             dataSort={true}
+            hidden={this.state.hidden}
             dataFormat={activeFormatter}
           >
             Ext. Salary
