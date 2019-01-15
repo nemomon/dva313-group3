@@ -228,12 +228,13 @@ class AllocationView extends Component {
 
     this.items.on("add", (event, props, args) => {
 
-
       if (args != null && args.total) {
-        let heigth = (args.rate / 2) + "px";
+        
+        let heigth = args.rate > 175 ? 175 : args.rate;  
         let ele = document.getElementsByClassName(args.id)[0];
+
         if (ele != undefined) {
-          ele.style.height = heigth;
+          ele.style.height = heigth + "px";
           this.timeline.redraw();
         }
       }
@@ -247,47 +248,48 @@ class AllocationView extends Component {
     let endDate = alloc.end;
     let empRate = alloc.content;
     let group = alloc.group;
+    let id = alloc.id;
 
     if (splitDate >= endDate || splitDate <= startDate) {
       return;
     }
 
-    //this.PHPController.deleteAllocation({Id: alloc.id, Flag: "D"});
+    this.PHPController.deleteAllocation({Id: alloc.id, Flag: "D"});
     this.items.remove(alloc.id); 
 
-    //ids are auto genereted here, can i querry a set of ids from the this.PHPController-class?
-    let newItem1 = { content: empRate, start: startDate, end: splitDate, group: group }
-    let newItem2 = { content: empRate, start: splitDate, end: endDate, group: group }
-/*
+    let id1 = "T" + id + "1";
+    let id2 = "T" + id + "2";
+
+    let newItem1 = { id: id1, content: empRate, start: startDate, end: splitDate, group: group }
+    let newItem2 = { id: id2, content: empRate, start: splitDate, end: endDate, group: group }
+
     let newAlloc1 = {
-      Id: "T" + item.id,
+      Id: id1,
       personId: this.props.personId,
-      projectId: item.group,   
+      projectId: group,   
       Percentage: empRate,
-      StartDate: item.start,
-      EndDate: item.end,
+      StartDate: startDate,
+      EndDate: splitDate,
       Flag: "I",
     }
 
     let newAlloc2 = {
-      Id: "T" + item.id,
+      Id: id2,
       personId: this.props.personId,
       projectId: group,   
       Percentage: empRate,
-      StartDate: item.start,
-      EndDate: item.end,
+      StartDate: splitDate,
+      EndDate: endDate,
       Flag: "I",
     }
 
-*/
-    //this.PHPController.insertAllocation(newAlloc1);
-    //this.PHPController.insertAllocation(newAlloc2);
+    this.PHPController.insertAllocation(newAlloc1);
+    this.PHPController.insertAllocation(newAlloc2);
 
     this.alertProjectEndExceeded(newItem1);
     this.alertProjectEndExceeded(newItem2);
     this.items.add(newItem1);
     this.items.add(newItem2);
-
   }
 
 
@@ -312,12 +314,14 @@ class AllocationView extends Component {
 
   /* lightweight version of the createTotalTimeline() method, used when an alloc have been moved or updated */
   updateTotalTimeline() {
+    console.log("updateTotalTimeline()");
     this.items.remove(this.items.get({ filter: function (item) { return item.group == ID_GROUP_TOTAL } }));
     this._createTotalTimeline();
   }
 
   /* creates the total timeline based on the allocations in the timeline */
   createTotalTimeline() {
+    console.log("createTotalTimeline()");
     this.items.remove(this.items.get({ filter: function (item) { return item.group == ID_GROUP_TOTAL } }));
 
     let totalSet = new vis.DataSet({});
@@ -407,9 +411,9 @@ class AllocationView extends Component {
     if (rate <= 75) return "background: #00ff77";
     if (rate <= 100) return "background: #38ff94";
     if (rate <= 125) return "background: #fdcb6e";
-    if (rate <= 150) return "background: #d63031";
-
-    return "background: #ff6666";
+    if (rate <= 150) return "background: #ff6666";
+    
+    return "background: #d63031";
   }
 
   /* retrives all allocations for one specific  person */
