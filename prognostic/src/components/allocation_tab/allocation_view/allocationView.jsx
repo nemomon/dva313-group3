@@ -96,6 +96,24 @@ class AllocationView extends Component {
    *                                                                        *
    **************************************************************************/
 
+  convertDateToYYYYMMDD(date) {
+    let year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
+
+    if(month < 10) {
+      month = "0" + month;
+    }
+    if(day < 10) {
+      day = "0" + day;
+    }
+
+    let YYYYMMDD = year + "-" + month + "-" + day;
+    console.log(YYYYMMDD);
+    return YYYYMMDD;
+  }
+
+
   /* Fired when an item is added to the timeline */
   onAdd(item, callback) {
     if (item.group == undefined || item.group == ID_GROUP_TOTAL || this.props.personId == null) {
@@ -103,19 +121,22 @@ class AllocationView extends Component {
       return;
     }
 
+    let start = this.convertDateToYYYYMMDD(item.start);
+    let end = this.convertDateToYYYYMMDD(item.end);
+
     let newAlloc = {
       Id: "T" + item.id,
       personId: this.props.personId,
       projectId: item.group,   
       Percentage: DEFAULT_EMP_RATE,
-      StartDate: item.start,
-      EndDate: item.end,
+      StartDate: start,
+      EndDate: end,
       Flag: "I",
     }
 
     item.id = "T" + item.id;
     item.content = DEFAULT_EMP_RATE;
-;
+
    this.PHPController.insertAllocation(newAlloc);
    this.alertProjectEndExceeded(item);
    callback(item);
@@ -488,7 +509,7 @@ class AllocationView extends Component {
     this.getAllocations(this.props.personId);
     this.createTotalTimeline();
     this.updateTimelineGroups();
-
+    console.log(this.items.get());
     return (
       <div className="prog-av">
         <div className="prog-av-user">{this.props.personName}</div>
