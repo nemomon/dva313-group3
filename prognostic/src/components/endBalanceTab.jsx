@@ -3,21 +3,17 @@ import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
 import "react-bootstrap-table/dist/react-bootstrap-table-all.min.css";
 import PHPController from "./PHPController";
 
-const cellEditProp = {
-  mode: "click"
-};
-
-function activeFormatter(cell, row) {
+function cellColorFormatter(cell, row) {
   let c = "gray";
   if (parseInt(cell) < 0) c = "red";
   return (
     <span>
-       <strong style={{ color: c }}>{parseInt(cell)}</strong>
+      <strong style={{ color: c }}>{parseInt(cell)}</strong>
     </span>
   );
 }
 
-function activeFormatter2(cell, row) {
+function summaryFormatter(cell, row) {
   let value =
     parseInt(row["InternalOverhead"]) +
     parseInt(row["ExternalOverhead"]) +
@@ -33,6 +29,16 @@ function activeFormatter2(cell, row) {
       <strong style={{ color: c }}>{value}</strong>
     </span>
   );
+}
+
+function toggleButtonText(state) {
+  let text = "Toggle";
+  if (state == false) {
+    text = "Collapse";
+  } else {
+    text = "Expand";
+  }
+  return <span>{text}</span>;
 }
 
 class endBalanceTab extends Component {
@@ -71,14 +77,14 @@ class endBalanceTab extends Component {
             paddingLeft: 15,
             paddingRight: 15,
             paddingTop: 8,
-            paddingBottom: 8
+            paddingBottom: 8,
+            width: 100
           }}
         >
-          Toggle
+          {toggleButtonText(this.state.hidden)}
         </button>
         <BootstrapTable
           data={this.state.endbalances}
-          cellEdit={cellEditProp}
           tableStyle={{
             backgroundColor: "#eeeeee"
           }}
@@ -98,7 +104,7 @@ class endBalanceTab extends Component {
           <TableHeaderColumn
             dataField="EndBalance"
             dataSort={true}
-            dataFormat={activeFormatter2}
+            dataFormat={summaryFormatter}
           >
             End Balance
           </TableHeaderColumn>
@@ -106,7 +112,7 @@ class endBalanceTab extends Component {
             dataField="ExternalSalary"
             dataSort={true}
             hidden={this.state.hidden}
-            dataFormat={activeFormatter}
+            dataFormat={cellColorFormatter}
           >
             Ext. Salary
           </TableHeaderColumn>
@@ -114,7 +120,7 @@ class endBalanceTab extends Component {
             dataField="InternalSalary"
             dataSort={true}
             hidden={this.state.hidden}
-            dataFormat={activeFormatter}
+            dataFormat={cellColorFormatter}
           >
             Int. Salary
           </TableHeaderColumn>
@@ -122,7 +128,7 @@ class endBalanceTab extends Component {
             dataField="ExternalOverhead"
             dataSort={true}
             hidden={this.state.hidden}
-            dataFormat={activeFormatter}
+            dataFormat={cellColorFormatter}
           >
             Ext. Overhead
           </TableHeaderColumn>
@@ -130,7 +136,7 @@ class endBalanceTab extends Component {
             dataField="InternalOverhead"
             dataSort={true}
             hidden={this.state.hidden}
-            dataFormat={activeFormatter}
+            dataFormat={cellColorFormatter}
           >
             Int. Overhead
           </TableHeaderColumn>
@@ -138,7 +144,7 @@ class endBalanceTab extends Component {
             dataField="ExternalOtherCost"
             dataSort={true}
             hidden={this.state.hidden}
-            dataFormat={activeFormatter}
+            dataFormat={cellColorFormatter}
           >
             Ext. Other Costs
           </TableHeaderColumn>
@@ -146,7 +152,7 @@ class endBalanceTab extends Component {
             dataField="InternalOtherCost"
             dataSort={true}
             hidden={this.state.hidden}
-            dataFormat={activeFormatter}
+            dataFormat={cellColorFormatter}
           >
             Int. Other Costs
           </TableHeaderColumn>

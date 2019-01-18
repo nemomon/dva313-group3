@@ -76,6 +76,7 @@ class PHPController {
           this.personTable[i]['Salary']=person['Salary'];
           this.personTable[i]['SocialFactor']=person['SocialFactor'];
           this.personTable[i]['IncrementFactor']=person['IncrementFactor'];
+          this.personTable[i]['Flag']=person['Flag'];
         }
       }
       for (var i = 0; i < this.allocationTable.length; i++) {
@@ -131,6 +132,7 @@ class PHPController {
       for (var i = 0; i < this.projectTable.length; i++) {
        if(this.projectTable[i]['Id']==project['Id'] && project['Flag'] =='U'){
 
+        console.log(this.projectTable[i]);
         this.projectTable[i]['Name']=project['Name'];
         this.projectTable[i]['EndDate']=project['EndDate'];
         this.projectTable[i]['Stl']=project['Stl'];
@@ -148,6 +150,7 @@ class PHPController {
         this.projectTable[i]['SpendingDate']=project['SpendingDate'];
         this.projectTable[i]['OverheadConstant']=project['OverheadConstant'];
         this.projectTable[i]['ExternalSalary']=project['ExternalSalary'];
+        this.projectTable[i]['Flag']=project['Flag'];
       }
     }
     for (var i = 0; i < this.allocationTable.length; i++) {
@@ -202,12 +205,13 @@ class PHPController {
 
    updateAllocation(allocation){
 
+
      for (var i = 0; i < this.allocationTable.length; i++) {
        if(this.allocationTable[i]['Id']==allocation['Id'] && allocation['Flag'] =='U'){
         this.allocationTable[i]['Percentage']=allocation['Percentage'];
         this.allocationTable[i]['StartDate']=allocation['StartDate'];
         this.allocationTable[i]['EndDate']=allocation['EndDate'];
-
+        this.allocationTable[i]['Flag']=allocation['Flag'];
       }
     }
     this.refreshEndBalance();
@@ -409,8 +413,10 @@ return new Date(d2).getMonth() - new Date(d1).getMonth() + (12 * (new Date(d2).g
           //Insert and Update (Person)
           for (var i = 0; i < this.personTable.length; i++) {
            if(this.personTable[i]['Flag']=='I'){
+             console.log(this.personTable[i]);
             var insertedId= this.personClass.insertPerson(this.personTable[i]['Name'], this.personTable[i]['Salary'], this.personTable[i]['SocialFactor'], this.personTable[i]['IncrementFactor']);
             //update allocation temprory Ids
+            console.log(insertedId);
             for (var j = 0; j < this.allocationTable.length; j++) {
               if(this.allocationTable[j]['personId']==this.personTable[i]['Id']){
                 this.allocationTable[j]['personId'] = insertedId;
@@ -506,6 +512,7 @@ return new Date(d2).getMonth() - new Date(d1).getMonth() + (12 * (new Date(d2).g
 
           //Insert and Update (Allocation)
           for (var i = 0; i < this.allocationTable.length; i++) {
+            console.log(this.allocationTable[i]);
            if(this.allocationTable[i]['Flag']=='I'){
 
             this.allocationClass.insertAllocation(this.allocationTable[i]['personId'], this.allocationTable[i]['projectId'], this.allocationTable[i]['Percentage'], 
@@ -513,12 +520,10 @@ return new Date(d2).getMonth() - new Date(d1).getMonth() + (12 * (new Date(d2).g
 
           }
           else if(this.allocationTable[i]['Flag']=='U' && this.allocationTable[i]['Id'].charAt(0) == 'T'){
-
             this.allocationClass.insertAllocation(this.allocationTable[i]['personId'], this.allocationTable[i]['projectId'], this.allocationTable[i]['Percentage'], 
               this.allocationTable[i]['StartDate'], this.allocationTable[i]['EndDate']);
           }
           else if(this.allocationTable[i]['Flag']=='U'){
-
             this.allocationClass.updateAllocation(this.allocationTable[i]['Id'],this.allocationTable[i]['Percentage'], this.allocationTable[i]['StartDate'], 
              this.allocationTable[i]['EndDate']);          
 
@@ -526,6 +531,7 @@ return new Date(d2).getMonth() - new Date(d1).getMonth() + (12 * (new Date(d2).g
 
 
         }
+        window.location.reload();
       }
 
 }

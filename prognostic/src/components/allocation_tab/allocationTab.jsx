@@ -16,15 +16,12 @@ class AllocationTab extends Component {
       selectedName: "",
       persons: []
     }
-
+    
   }
 
   componentDidMount() {
-
     let persons = this.PHPController.getPersons();
     this.setState({ persons: persons });
-
-   // this.PHPController.getPersons(result => this.setState({ persons: result }));
   }
 
   updateAllocationView = (id, name) => {

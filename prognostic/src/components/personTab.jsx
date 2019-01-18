@@ -3,10 +3,6 @@ import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
 import "react-bootstrap-table/dist/react-bootstrap-table-all.min.css";
 import PHPController from "./PHPController";
 
-const cellEditProp = {
-  mode: "click"
-};
-
 class personTab extends Component {
   constructor(props) {
     super(props);
@@ -19,8 +15,6 @@ class personTab extends Component {
       defaultSortName: "Name",
       defaultSortOrder: "desc"
     };
-
-    console.log("executed");
   }
 
   componentDidMount() {
@@ -96,6 +90,19 @@ class personTab extends Component {
     }
   }
 
+  onAfterSaveCell(row, cellName, cellValue) {
+    let PHP = new PHPController();
+    let updatedPerson = {
+      Id: row["Id"],
+      Name: row["Name"],
+      Salary: row["Salary"],
+      SocialFactor: row["SocialFactor"],
+      IncrementFactor: row["IncrementFactor"],
+      Flag: "U"
+    };
+    PHP.updatePerson(updatedPerson);
+  }
+
   render() {
     const options = {
       insertBtn: this.createCustomInsertButton,
@@ -105,6 +112,11 @@ class personTab extends Component {
     };
     const selectRow = {
       mode: "checkbox"
+    };
+
+    const cellEditProp = {
+      mode: "click",
+      afterSaveCell: this.onAfterSaveCell
     };
 
     return (

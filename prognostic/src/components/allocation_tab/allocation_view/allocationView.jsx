@@ -18,6 +18,7 @@ class AllocationView extends Component {
     this.timeline = null;
     this.showEmptyGroups = true;
     this.init = true;
+    this.toggleRef = React.createRef();
 
     this.preInit();
   }
@@ -27,6 +28,12 @@ class AllocationView extends Component {
     this.createGroups();
   }
 
+  /* fired after the timeline is created */
+  postInit() {
+    this.createTotalTimeline();
+    this.attachEvents();
+  }
+  
   /* When react mounts the component, attatch the timeline to the div with id=timeline created in render() */
   componentDidMount() {
     let container = document.getElementById("timeline");
@@ -40,11 +47,6 @@ class AllocationView extends Component {
     this.postInit();
   }
 
-  /* fired after the timeline is created */
-  postInit() {
-    this.createTotalTimeline();
-    this.attachEvents();
-  }
 
   /* Options and events for the timeline, events are delageted to class methods  */
   options = {
@@ -95,24 +97,6 @@ class AllocationView extends Component {
    *   callback(null).                                                      *
    *                                                                        *
    **************************************************************************/
-
-  convertDateToYYYYMMDD(date) {
-    let year = date.getFullYear();
-    let month = date.getMonth() + 1;
-    let day = date.getDate();
-
-    if(month < 10) {
-      month = "0" + month;
-    }
-    if(day < 10) {
-      day = "0" + day;
-    }
-
-    let YYYYMMDD = year + "-" + month + "-" + day;
-    console.log(YYYYMMDD);
-    return YYYYMMDD;
-  }
-
 
   /* Fired when an item is added to the timeline */
   onAdd(item, callback) {
@@ -180,8 +164,9 @@ class AllocationView extends Component {
 
     if (Math.floor(value) == value) {
       item.content = value;
-
-      let updateAlloc = {Id: item.id, Flag: "U", StartDate: item.start, EndDate: item.end, Percentage: item.content};
+      let start = this.convertDateToYYYYMMDD(item.start);
+      let end = this.convertDateToYYYYMMDD(item.end);
+      let updateAlloc = {Id: item.id, Flag: "U", StartDate: start, EndDate: end, Percentage: item.content};
       this.PHPController.updateAllocation(updateAlloc);
 
       callback(item);
@@ -199,7 +184,9 @@ class AllocationView extends Component {
       callback(null);
       return;
     }
-    let updateAlloc = {Id: item.id, Flag: "U", StartDate: item.start, EndDate: item.end, Percentage: item.content};
+    let start = this.convertDateToYYYYMMDD(item.start);
+    let end = this.convertDateToYYYYMMDD(item.end);
+    let updateAlloc = {Id: item.id, Flag: "U", StartDate: start, EndDate: end, Percentage: item.content};
     this.PHPController.updateAllocation(updateAlloc);
     callback(item);
     this.createTotalTimeline();
@@ -228,13 +215,35 @@ class AllocationView extends Component {
    ***********************************************************/
 
 
+
+ /* helper function to convert javascript date objects to a YYYY-MM-DD string */
+  convertDateToYYYYMMDD(date) {
+    let year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
+
+    if(month < 10) {
+      month = "0" + month;
+    }
+    if(day < 10) {
+      day = "0" + day;
+    }
+
+    return year + "-" + month + "-" + day;
+  }
+
+
   /* helper function to display visual warning if the allocation exceed a projects end date */
   alertProjectEndExceeded(item) {
       item.style = item.end > this.groups.get(item.group).end ? "background: rgba(175, 0, 0, 1);" : "";
   }
 
 
+
+  /* Attatching events to the vis-dataset and vis-timeline that are not covered by the events in the options object */
   attachEvents() {
+
+    /*event for splitting the allocation */
     this.timeline.on('contextmenu', props => {
       props.event.preventDefault();
       if (props.item != null && props.group != ID_GROUP_TOTAL) {
@@ -243,17 +252,19 @@ class AllocationView extends Component {
       }
     }); 
 
-    this.timeline.on('rangechanged', (a, b, x) => {
+    /* event to update the total timeline when an allocation have been moved */
+    this.timeline.on('rangechanged', (event, props, args) => {
       this.updateTotalTimeline();
     });
 
+    /* this is sort of a hack-event to realize the total timeline, the HTML-DOM object for the allocations is created by the vis-timeline,
+       therefore we need to get that HTML-DOM object after its created and change its height, cant give ID's either to the timeline objects, 
+       however we can give them class names, so we provide unique class names in another method and then target that dom element in this callback
+       method. */
     this.items.on("add", (event, props, args) => {
-
       if (args != null && args.total) {
-        
         let heigth = args.rate > 175 ? 175 : args.rate;  
         let ele = document.getElementsByClassName(args.id)[0];
-
         if (ele != undefined) {
           ele.style.height = heigth + "px";
           this.timeline.redraw();
@@ -467,6 +478,7 @@ class AllocationView extends Component {
   /* toggle between hide/show of all groups with no allocations */
   toggleGroups = () => {
     this.showEmptyGroups = !this.showEmptyGroups;
+    this.toggleRef.current.innerHTML = this._getToggleText();
     this.updateTimelineGroups();
   };
 
@@ -503,17 +515,24 @@ class AllocationView extends Component {
     }
   }
 
+  _getToggleText() {
+    let str = this.showEmptyGroups? "COLLAPASE" : "EXPAND";
+    return str;
+  }
+
   render() {
     console.log("RENDER: AllocationView.jsx");
   
     this.getAllocations(this.props.personId);
     this.createTotalTimeline();
     this.updateTimelineGroups();
-    console.log(this.items.get());
+
+    let str = this._getToggleText();
+
     return (
       <div className="prog-av">
         <div className="prog-av-user">{this.props.personName}</div>
-        <button className="togglebtn" onClick={this.toggleGroups}>TOGGLE</button>
+        <button className="togglebtn" onClick={this.toggleGroups} ref={this.toggleRef}>{str}</button>
         <div className="prog-av-container">
           <div id="timeline" />
         </div>

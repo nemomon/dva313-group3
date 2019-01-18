@@ -50,17 +50,6 @@ class NavigationBar extends React.Component {
             <NavItem>
               <NavLink to="">Save File</NavLink>
             </NavItem>
-            <NavItem>
-              <Dropdown>
-                <DropdownToggle nav caret>
-                  <div className="d-none d-md-inline">Add</div>
-                </DropdownToggle>
-                <DropdownMenu right>
-                  <DropdownItem href="#!">Staff</DropdownItem>
-                  <DropdownItem href="#!">Project</DropdownItem>
-                </DropdownMenu>
-              </Dropdown>
-            </NavItem>
           </NavbarNav>
           <NavItem
            onClick={() => (new PHPController()).saveAll()}
