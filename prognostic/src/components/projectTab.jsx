@@ -73,9 +73,17 @@ class projectTab extends Component {
       InternalOtherCost: row["InternalOtherCost"],
       OverheadConstant: row["OverheadConstant"],
       Stl: row["Stl"],
+      SpendingDate: "",
+      SpendingExternalSalary: "0",
+      SpendingExternalOverhead: "0",
+      SpendingExternalOtherCost: "0",
+      SpendingInternalSalary: "0",
+      SpendingInternalOverhead: "0",
+      SpendingInternalOtherCost: "0",
       Flag: "I"
     };
     this.PHPController.insertProject(newProject);
+    console.log(newProject);
   }
 
   onAfterDeleteRow(rowKeys, rows) {
