@@ -83,7 +83,6 @@ class projectTab extends Component {
       Flag: "I"
     };
     this.PHPController.insertProject(newProject);
-    console.log(newProject);
   }
 
   onAfterDeleteRow(rowKeys, rows) {
