@@ -3,10 +3,6 @@ import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
 import "react-bootstrap-table/dist/react-bootstrap-table-all.min.css";
 import PHPController from "./PHPController";
 
-const cellEditProp = {
-  mode: "click"
-};
-
 class remainingTab extends Component {
   constructor(props) {
     super(props);
@@ -31,7 +27,6 @@ class remainingTab extends Component {
       <div className="tableDiv">
         <BootstrapTable
           data={this.state.remainings}
-          cellEdit={cellEditProp}
           tableStyle={{
             backgroundColor: "#eeeeee"
           }}

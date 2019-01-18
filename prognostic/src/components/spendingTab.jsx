@@ -3,10 +3,6 @@ import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
 import "react-bootstrap-table/dist/react-bootstrap-table-all.min.css";
 import PHPController from "./PHPController";
 
-const cellEditProp = {
-  mode: "click"
-};
-
 class spendingTab extends Component {
   constructor(props) {
     super(props);
@@ -26,7 +22,28 @@ class spendingTab extends Component {
     this.setState({ spendings: spendings });
   }
 
+  onAfterSaveCell(row, cellName, cellValue) {
+    let PHP = new PHPController();
+    let updatedSpending = {
+      Id: row["Id"],
+      Name: row["Name"],
+      SpendingDate: row["SpendingDate"],
+      SpendingExternalSalary: row["SpendingExternalSalary"],
+      SpendingExternalOverhead: row["SpendingExternalOverhead"],
+      SpendingExternalOtherCost: row["SpendingExternalOtherCost"],
+      SpendingInternalSalary: row["SpendingInternalSalary"],
+      SpendingInternalOverhead: row["SpendingInternalOverhead"],
+      SpendingInternalOtherCost: row["SpendingInternalOtherCost"],
+      Flag: "U"
+    };
+    PHP.updateProject(updatedSpending);
+  }
+
   render() {
+    const cellEditProp = {
+      mode: "click",
+      afterSaveCell: this.onAfterSaveCell
+    };
     return (
       <div className="tableDiv">
         <BootstrapTable
