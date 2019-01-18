@@ -106,6 +106,13 @@ class projectTab extends Component {
       InternalOtherCost: row["InternalOtherCost"],
       OverheadConstant: row["OverheadConstant"],
       Stl: row["Stl"],
+      SpendingDate: row["SpendingDate"],
+      SpendingExternalSalary: row["SpendingExternalSalary"],
+      SpendingExternalOverhead: row["SpendingExternalOverhead"],
+      SpendingExternalOtherCost: row["SpendingExternalOtherCost"],
+      SpendingInternalSalary: row["SpendingInternalSalary"],
+      SpendingInternalOverhead: row["SpendingInternalOverhead"],
+      SpendingInternalOtherCost: row["SpendingInternalOtherCost"],
       Flag: "U"
     };
     PHP.updateProject(updatedProject);
@@ -123,6 +130,7 @@ class projectTab extends Component {
     };
     const cellEditProp = {
       mode: "click",
+      blurToSave: true,
       afterSaveCell: this.onAfterSaveCell
     };
 

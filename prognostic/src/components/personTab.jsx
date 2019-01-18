@@ -116,6 +116,7 @@ class personTab extends Component {
 
     const cellEditProp = {
       mode: "click",
+      blurToSave: true,
       afterSaveCell: this.onAfterSaveCell
     };
 

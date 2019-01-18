@@ -24,9 +24,18 @@ class spendingTab extends Component {
 
   onAfterSaveCell(row, cellName, cellValue) {
     let PHP = new PHPController();
-    let updatedSpending = {
+    let updatedProject = {
       Id: row["Id"],
       Name: row["Name"],
+      EndDate: row["EndDate"],
+      ExternalSalary: row["ExternalSalary"],
+      ExternalOverhead: row["ExternalOverhead"],
+      ExternalOtherCost: row["ExternalOtherCost"],
+      InternalSalary: row["InternalSalary"],
+      InternalOverhead: row["InternalOverhead"],
+      InternalOtherCost: row["InternalOtherCost"],
+      OverheadConstant: row["OverheadConstant"],
+      Stl: row["Stl"],
       SpendingDate: row["SpendingDate"],
       SpendingExternalSalary: row["SpendingExternalSalary"],
       SpendingExternalOverhead: row["SpendingExternalOverhead"],
@@ -36,12 +45,13 @@ class spendingTab extends Component {
       SpendingInternalOtherCost: row["SpendingInternalOtherCost"],
       Flag: "U"
     };
-    PHP.updateProject(updatedSpending);
+    PHP.updateProject(updatedProject);
   }
 
   render() {
     const cellEditProp = {
       mode: "click",
+      blurToSave: true,
       afterSaveCell: this.onAfterSaveCell
     };
     return (
