@@ -9,8 +9,6 @@ import RemainingTab from "./components/remainingTab";
 import EndBalanceTab from "./components/endBalanceTab";
 import { Route } from "react-router-dom";
 import BodyBackgroundColor from "react-body-backgroundcolor";
-import AllocationView from "./components/allocation_tab/allocation_view/allocationView";
-
 
 
 
