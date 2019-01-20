@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
 import "react-bootstrap-table/dist/react-bootstrap-table-all.min.css";
 import PHPController from "./PHPController";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 class personTab extends Component {
   constructor(props) {
@@ -58,6 +60,14 @@ class personTab extends Component {
     );
   };
 
+  onAddRow = (row, colInfo, errorCallback) => {
+    if (row.SocialFactor < 0 || row.SocialFactor > 9.99)
+      return "Social Factor must be in the range of 0 - 9.99.";
+    if (row.IncrementFactor < 0 || row.SocialFactor > 9.99)
+      return "Increment Factor must be in the range of 0 - 9.99.";
+    errorCallback();
+  };
+
   onAfterInsertRow(row) {
     row.Id = "T" + row.Id;
     this.PHPController = new PHPController();
@@ -84,10 +94,29 @@ class personTab extends Component {
         Id: id,
         Flag: "D"
       };
-
-      console.log(removePerson);
       PHP.deletePerson(removePerson);
     }
+  }
+
+  onBeforeSaveCell(row, cellName, cellValue) {
+    if (cellName == "SocialFactor") {
+      if (cellValue < 0 || cellValue > 9.99) {
+        toast.error(({ closeToast }) => (
+          <div>Social Factor must be in the range of 0 - 9.99.</div>
+        ));
+        return false;
+      }
+    }
+    if (cellName == "IncrementFactor") {
+      if (cellValue < 0 || cellValue > 9.99) {
+        toast.error(({ closeToast }) => (
+          <div>Increment Factor must be in the range of 0 - 9.99.</div>
+        ));
+        return false;
+      }
+    }
+
+    return true;
   }
 
   onAfterSaveCell(row, cellName, cellValue) {
@@ -107,6 +136,7 @@ class personTab extends Component {
     const options = {
       insertBtn: this.createCustomInsertButton,
       deleteBtn: this.createCustomDeleteButton,
+      onAddRow: this.onAddRow,
       afterInsertRow: this.onAfterInsertRow,
       afterDeleteRow: this.onAfterDeleteRow
     };
@@ -117,11 +147,13 @@ class personTab extends Component {
     const cellEditProp = {
       mode: "click",
       blurToSave: true,
+      beforeSaveCell: this.onBeforeSaveCell,
       afterSaveCell: this.onAfterSaveCell
     };
 
     return (
       <div className="tableDiv">
+        <ToastContainer />
         <BootstrapTable
           data={this.state.persons}
           cellEdit={cellEditProp}

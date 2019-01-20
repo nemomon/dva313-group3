@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
 import "react-bootstrap-table/dist/react-bootstrap-table-all.min.css";
 import PHPController from "./PHPController";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 class projectTab extends Component {
   constructor(props) {
@@ -58,6 +60,20 @@ class projectTab extends Component {
     );
   };
 
+  onAddRow = (row, colInfo, errorCallback) => {
+    if (
+      row.EndDate.length != 10 ||
+      row.EndDate.charAt(4) != "-" ||
+      row.EndDate.charAt(7) != "-"
+    )
+      return "Please use the following date format: XXXX-XX-XX.";
+    if (row.OverheadConstant < 0 || row.OverheadConstant > 9.99)
+      return "Overhead Constant must be in the range of 0 - 9.99.";
+    if (row.Stl != 0 && row.Stl != 1)
+      return "STL must be 1 (true) or 0 (false).";
+    errorCallback();
+  };
+
   onAfterInsertRow(row) {
     row.Id = "T" + row.Id;
     this.PHPController = new PHPController();
@@ -99,6 +115,38 @@ class projectTab extends Component {
     }
   }
 
+  onBeforeSaveCell(row, cellName, cellValue) {
+    if (cellName == "EndDate") {
+      if (
+        cellValue.length != 10 ||
+        cellValue.charAt(4) != "-" ||
+        cellValue.charAt(7) != "-"
+      ) {
+        toast.error(({ closeToast }) => (
+          <div>Please use the following date format: XXXX-XX-XX.</div>
+        ));
+        return false;
+      }
+    }
+    if (cellName == "OverheadConstant") {
+      if (cellValue < 0 || cellValue > 9.99) {
+        toast.error(({ closeToast }) => (
+          <div>Overhead Constant must be in the range of 0 - 9.99.</div>
+        ));
+        return false;
+      }
+    }
+    if (cellName == "Stl") {
+      if (cellValue != 0 && cellValue != 1) {
+        toast.error(({ closeToast }) => (
+          <div>STL must be 1 (true) or 0 (false).</div>
+        ));
+        return false;
+      }
+    }
+    return true;
+  }
+
   onAfterSaveCell(row, cellName, cellValue) {
     let PHP = new PHPController();
     let updatedProject = {
@@ -129,6 +177,7 @@ class projectTab extends Component {
     const options = {
       insertBtn: this.createCustomInsertButton,
       deleteBtn: this.createCustomDeleteButton,
+      onAddRow: this.onAddRow,
       afterInsertRow: this.onAfterInsertRow,
       afterDeleteRow: this.onAfterDeleteRow
     };
@@ -138,11 +187,13 @@ class projectTab extends Component {
     const cellEditProp = {
       mode: "click",
       blurToSave: true,
+      beforeSaveCell: this.onBeforeSaveCell,
       afterSaveCell: this.onAfterSaveCell
     };
 
     return (
       <div className="tableDiv">
+        <ToastContainer />
         <BootstrapTable
           data={this.state.projects}
           cellEdit={cellEditProp}

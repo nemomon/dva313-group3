@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
 import "react-bootstrap-table/dist/react-bootstrap-table-all.min.css";
 import PHPController from "./PHPController";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 class spendingTab extends Component {
   constructor(props) {
@@ -20,6 +22,22 @@ class spendingTab extends Component {
   componentDidMount() {
     let spendings = this.PHPController.getProjects();
     this.setState({ spendings: spendings });
+  }
+
+  onBeforeSaveCell(row, cellName, cellValue) {
+    if (cellName == "SpendingDate") {
+      if (
+        cellValue.length != 10 ||
+        cellValue.charAt(4) != "-" ||
+        cellValue.charAt(7) != "-"
+      ) {
+        toast.error(({ closeToast }) => (
+          <div>Please use the following date format: XXXX-XX-XX.</div>
+        ));
+        return false;
+      }
+    }
+    return true;
   }
 
   onAfterSaveCell(row, cellName, cellValue) {
@@ -52,10 +70,12 @@ class spendingTab extends Component {
     const cellEditProp = {
       mode: "click",
       blurToSave: true,
+      beforeSaveCell: this.onBeforeSaveCell,
       afterSaveCell: this.onAfterSaveCell
     };
     return (
       <div className="tableDiv">
+        <ToastContainer />
         <BootstrapTable
           data={this.state.spendings}
           cellEdit={cellEditProp}
