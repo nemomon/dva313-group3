@@ -63,7 +63,7 @@ class personTab extends Component {
   onAddRow = (row, colInfo, errorCallback) => {
     if (row.SocialFactor < 0 || row.SocialFactor > 9.99)
       return "Social Factor must be in the range of 0 - 9.99.";
-    if (row.IncrementFactor < 0 || row.SocialFactor > 9.99)
+    if (row.IncrementFactor < 0 || row.IncrementFactor > 9.99)
       return "Increment Factor must be in the range of 0 - 9.99.";
     errorCallback();
   };
