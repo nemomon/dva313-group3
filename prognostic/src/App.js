@@ -7,10 +7,8 @@ import ProjectTab from "./components/projectTab";
 import SpendingTab from "./components/spendingTab";
 import RemainingTab from "./components/remainingTab";
 import EndBalanceTab from "./components/endBalanceTab";
-import { Route } from "react-router-dom";
+import { Route, withRouter } from "react-router-dom";
 import BodyBackgroundColor from "react-body-backgroundcolor";
-
-
 
 class App extends Component {
 
@@ -19,7 +17,7 @@ class App extends Component {
       /*  Attach the diffenrent components her to build the whole UI */
       <BodyBackgroundColor backgroundColor='#3d3d3d'>
         <React.Fragment>
-          <NavigationBar />
+          <NavigationBar/>
           <Route path="/allocationTable" component={AllocationTab} />
           <Route path="/personTable" component={PersonTab} />
           <Route path="/projectTable" component={ProjectTab} />
@@ -34,5 +32,4 @@ class App extends Component {
   }
 }
 
-
-export default App;
+export default withRouter(App);

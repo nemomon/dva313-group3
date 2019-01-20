@@ -48,7 +48,7 @@ class NavigationBar extends React.Component {
               <NavLink to="/endBalanceTable">End Balance</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink to="">Save File</NavLink>
+              <NavLink to="./pdf/pdf.php">Save File</NavLink>
             </NavItem>
           </NavbarNav>
           <NavItem

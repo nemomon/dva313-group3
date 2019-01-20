@@ -27,10 +27,6 @@ class PHPController {
       this.endbalanceClass= endbalanceClass;
       this.endbalanceTable= endbalanceClass.getAllEndBalance();
 
-      //let spendingClass = new Spending();
-      //this.spendingClass= spendingClass;
-      //this.spendingTable= spendingClass.getAllSpending();
-
       let remainingClass = new Remaining();
       this.remainingClass= remainingClass;
       this.remainingTable= remainingClass.getAllRemaining();
