@@ -25,6 +25,25 @@ class spendingTab extends Component {
   }
 
   onBeforeSaveCell(row, cellName, cellValue) {
+    if (cellValue == "") {
+      toast.error(({ closeToast }) => <div>Value can not be empty.</div>);
+      return false;
+    }
+
+    if (
+      cellName == "SpendingExternalSalary" ||
+      cellName == "SpendingExternalOverhead" ||
+      cellName == "SpendingExternalOtherCost" ||
+      cellName == "SpendingInternalSalary" ||
+      cellName == "SpendingInternalOtherCost" ||
+      cellName == "SpendingInternalOverhead"
+    ) {
+      if (isNaN(cellValue)) {
+        toast.error(({ closeToast }) => <div>Value must be a number.</div>);
+        return false;
+      }
+    }
+
     if (cellName == "SpendingDate") {
       if (
         cellValue.length != 10 ||
