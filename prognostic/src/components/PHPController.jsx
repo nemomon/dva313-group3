@@ -90,10 +90,11 @@ class PHPController {
 
    deletePerson(person){
     for (var i = 0; i < this.personTable.length; i++) {
+        
              if(this.personTable[i]['Id']==person['Id'] && person['Flag'] =='D' && person['Id'].charAt(0) == 'T'){ //delete a person not exists in database
               this.personTable.splice(i, 1);
               i--;
-              for (var j = 0; j < this.allocationTable.length; i++) {
+              for (var j = 0; j < this.allocationTable.length; j++) {
                 if(this.allocationTable[j]['personId']==person['Id']){
                   this.allocationTable.splice(j, 1);
                   j--;
