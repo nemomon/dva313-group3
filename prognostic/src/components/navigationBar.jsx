@@ -48,13 +48,14 @@ class NavigationBar extends React.Component {
               <NavLink to="/endBalanceTable">End Balance</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink to="./pdf/pdf.php">Save File</NavLink>
+              <NavLink to="/project/pdf/pdf.php">Save File</NavLink>
             </NavItem>
           </NavbarNav>
           <NavItem
            onClick={() => (new PHPController()).saveAll()}
+           className="navbarSave"
             >
-            <NavLink className="navbarSave" to="#!">SAVE CHANGES /</NavLink>
+            SAVE CHANGES /
           </NavItem>
         </Collapse>
       </Navbar>

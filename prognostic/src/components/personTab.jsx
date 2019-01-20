@@ -61,10 +61,19 @@ class personTab extends Component {
   };
 
   onAddRow = (row, colInfo, errorCallback) => {
+    if (row.Name == "") return "Please enter a name.";
+    if (row.Salary == "") return "Please enter a salary.";
+    if (isNaN(row.Salary)) return "Salary must be a number.";
+    if (row.Salary < 0) return "Salary must be positive.";
+    if (row.SocialFactor == "") return "Please enter a social factor.";
+    if (isNaN(row.SocialFactor)) return "Social factor must be a number.";
     if (row.SocialFactor < 0 || row.SocialFactor > 9.99)
       return "Social Factor must be in the range of 0 - 9.99.";
+    if (row.IncrementFactor == "") return "Please enter an increment factor.";
+    if (isNaN(row.IncrementFactor)) return "Increment factor must be a number.";
     if (row.IncrementFactor < 0 || row.IncrementFactor > 9.99)
       return "Increment Factor must be in the range of 0 - 9.99.";
+
     errorCallback();
   };
 
@@ -99,18 +108,30 @@ class personTab extends Component {
   }
 
   onBeforeSaveCell(row, cellName, cellValue) {
-    if (cellName == "SocialFactor") {
-      if (cellValue < 0 || cellValue > 9.99) {
-        toast.error(({ closeToast }) => (
-          <div>Social Factor must be in the range of 0 - 9.99.</div>
-        ));
+    if (cellValue == "") {
+      toast.error(({ closeToast }) => <div>The field can not be empty.</div>);
+      return false;
+    }
+    if (
+      cellName == "Salary" ||
+      cellName == "SocialFactor" ||
+      cellName == "IncrementFactor"
+    ) {
+      if (isNaN(cellValue)) {
+        toast.error(({ closeToast }) => <div>The value must be a number.</div>);
         return false;
       }
     }
-    if (cellName == "IncrementFactor") {
+    if (cellName == "Salary") {
+      if (cellValue < 0) {
+        toast.error(({ closeToast }) => <div>The value must be positive.</div>);
+        return false;
+      }
+    }
+    if (cellName == "SocialFactor" || cellName == "IncrementFactor") {
       if (cellValue < 0 || cellValue > 9.99) {
         toast.error(({ closeToast }) => (
-          <div>Increment Factor must be in the range of 0 - 9.99.</div>
+          <div>The value must be in the range of 0 - 9.99.</div>
         ));
         return false;
       }

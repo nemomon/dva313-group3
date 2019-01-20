@@ -61,14 +61,37 @@ class projectTab extends Component {
   };
 
   onAddRow = (row, colInfo, errorCallback) => {
+    if (row.Name == "") return "Please enter a name.";
+    if (row.EndDate == "") return "Please enter an end date.";
     if (
       row.EndDate.length != 10 ||
       row.EndDate.charAt(4) != "-" ||
       row.EndDate.charAt(7) != "-"
     )
       return "Please use the following date format: XXXX-XX-XX.";
+    if (row.ExternalSalary == "") return "Please enter External Salary.";
+    if (isNaN(row.ExternalSalary)) return "External Salary must be a number.";
+    if (row.ExternalOverhead == "") return "Please enter External Overhead.";
+    if (isNaN(row.ExternalOverhead))
+      return "External Overhead must be a number.";
+    if (row.ExternalOtherCost == "") return "Please enter External Other Cost.";
+    if (isNaN(row.ExternalOtherCost))
+      return "External Other Cost must be a number.";
+    if (row.InternalSalary == "") return "Please enter Internal Salary.";
+    if (isNaN(row.InternalSalary)) return "Internal Salary must be a number.";
+    if (row.InternalOverhead == "") return "Please enter Internal Overhead.";
+    if (isNaN(row.InternalOverhead))
+      return "Internal Overhead must be a number.";
+    if (row.InternalOtherCost == "") return "Please enter Internal Other Cost.";
+    if (isNaN(row.InternalOtherCost))
+      return "Internal Other Cost must be a number.";
+    if (row.OverheadConstant == "") return "Please enter Overhead Constant.";
+    if (isNaN(row.OverheadConstant))
+      return "Overhead Constant must be a number.";
     if (row.OverheadConstant < 0 || row.OverheadConstant > 9.99)
       return "Overhead Constant must be in the range of 0 - 9.99.";
+    if (row.Stl == "") return "Please enter STL.";
+    if (isNaN(row.Stl)) return "Stl must be a number.";
     if (row.Stl != 0 && row.Stl != 1)
       return "STL must be 1 (true) or 0 (false).";
     errorCallback();
@@ -116,6 +139,27 @@ class projectTab extends Component {
   }
 
   onBeforeSaveCell(row, cellName, cellValue) {
+    if (cellValue == "") {
+      toast.error(({ closeToast }) => <div>Value can not be empty.</div>);
+      return false;
+    }
+
+    if (
+      cellName == "ExternalSalary" ||
+      cellName == "ExternalOverhead" ||
+      cellName == "ExternalOtherCost" ||
+      cellName == "InternalSalary" ||
+      cellName == "InternalOtherCost" ||
+      cellName == "InternalOverhead" ||
+      cellName == "OverheadConstant" ||
+      cellName == "Stl"
+    ) {
+      if (isNaN(cellValue)) {
+        toast.error(({ closeToast }) => <div>Value must be a number.</div>);
+        return false;
+      }
+    }
+
     if (cellName == "EndDate") {
       if (
         cellValue.length != 10 ||

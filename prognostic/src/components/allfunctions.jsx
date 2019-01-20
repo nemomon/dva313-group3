@@ -1,7 +1,7 @@
 import $ from "jquery";
 
 const BASE = "http://localhost/project/";
-
+//const BASE = "../";
 class Person{
 
   constructor() {
